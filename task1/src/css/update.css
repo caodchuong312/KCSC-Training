@@ -1,0 +1,44 @@
+#form-update {
+  width: 400px;
+  margin: 0px auto;
+  padding: 30px;
+  border: 1px solid #ddd;
+  box-shadow: 2px 2px 5px #ddd;
+  border-radius: 5px;
+}
+#form-update label {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+#form-update input[type="text"],
+#form-update input[type="email"],
+#form-update input[type="tel"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+#form-update input[type="radio"] {
+  margin-right: 10px;
+}
+
+#form-update input[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+#form-update input[type="submit"]:hover {
+  background-color: #3e8e41;
+}
+*{
+  font-family: Arial, Helvetica, sans-serif;;
+}

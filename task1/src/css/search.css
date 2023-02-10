@@ -1,0 +1,43 @@
+.search-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  width: 500px;
+  margin: 50px auto;
+}
+
+form {
+  display: flex;
+  align-items: center;
+}
+
+input[type="text"] {
+  height: 50px;
+  width: 80%;
+  padding: 0 10px;
+  font-size: 20px;
+}
+
+button[type="submit"] {
+  height: 50px;
+  width: 30%;
+  background-color: lightblue;
+  color: white;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+#username{
+  height: 30px;
+  text-align: center;
+}
+a{
+  font-size: 20px;
+}
+body {
+  background-color: black;
+}
+*{
+  font-family: Arial, Helvetica, sans-serif;
+}
