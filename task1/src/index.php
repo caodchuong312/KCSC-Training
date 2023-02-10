@@ -52,7 +52,9 @@
 				$result= mysqli_query($conn,$sql);
 				if(mysqli_num_rows($result)==0){
 					die("Không tìm thấy user");
-				}else{
+				}else{	  ?>
+					<h3 style="text-align: center;"> <?php echo "kết quả tìm kiếm cho $search :"; ?> </h3>
+					<?php
 					while ($user= mysqli_fetch_array($result)) {
 					?>
 						<div id="username"> <a href="user.php?username=<?php echo $user['username']; ?>"> <?php echo $user['username']; ?> </a> <br> </div>
