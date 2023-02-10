@@ -42,7 +42,7 @@
 		<button type="submit" name="submit">Tìm kiếm</button>
 	</form>
 </div>
-</div>
+
 	<?php 
 			include 'connect.php';
 			if(isset($_POST['submit'])){
