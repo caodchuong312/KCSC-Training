@@ -2,6 +2,9 @@
 	session_start();
 	include 'connect.php';
 	$username=$_POST['username'];
+	if( !preg_match('/^[A-Za-z0-9_]+$/', $username)){
+		die("username không hợp lệ!");
+	}
 	$password=$_POST['password'];
 	$password=md5($password);
 	$sql="select * from user where username='$username' and password='$password'";
