@@ -1,6 +1,9 @@
 <?php 
 	include 'connect.php';
 	$username=$_POST['username'];
+	if( !preg_match('/^[A-Za-z0-9_]+$/', $username)){
+		die("username không hợp lệ!");
+	}
 	$password=$_POST['password'];
 	$sql="select * from user where username='$username'" ;
 	$result= mysqli_query($conn,$sql);
