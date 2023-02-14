@@ -76,4 +76,39 @@ Nhập dữ liệu với giá trị boolean
 
 - Tấn công qua input:
  * Dữ liệu nhập vào được đưa browser gửi tới server qua GET hoặc POST method trở thành tham số truy cập tới dữ liệu
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ # Thực hành:
+ ## webhacking.kr
+
+**old-45**
+
+Bắt đầu vào chall nhận thấy có một form có 2 input có name là `id` và `pw` sẽ được truyền bằng GET method khi submit.
+
+Xem source code em thấy các giá trị tham số `id` và `pw` sẽ được lấy từ GET method và được xử lý qua các hàm `addslashes()`, `mb_convert_encoding()`, `preg_match()`. Sau cùng sẽ đưa chúng vào câu truy vấn tới db. Nếu câu truy vấn trả về kết quả và kết quả đó có giá trị của key `id` bằng với `admin` thì chall sẽ được giải (`if($result['id'] == "admin") solve(45);`)
+
+- Với hàm `addslashes()`: Đây là hàm sẽ thêm ký tự gạch chéo ngược `\` vào trước các ký tự `'`, `"`, `\` và NULL. Như vậy là đã ngăn chặn được 1 phần tránh bị inject
+- Với hàm `mb_convert_encoding()` ở trong bài này sẽ chuyển đổi `$_GET['id']` từ bản mã euc-kr sang bảng mã utf-8.
+
+euc-kr là 1 bảng mã dùng để mã hóa ký tự Hàn Quốc và 1 ký tự được mã hóa bằng 1 cặp hex.
+
+Nhận thấy `\` encode là `%5c`. Khi inject các ký tự đặc biệt như `'`, `"`... `%5c` sẽ đưa vào phía trước các ký tự đó. Vì vậy để bypass ta sẽ thêm ký tự phía trước sao cho khi nó encode kết hợp với `%5c` sẽ được 1 ký tự mới trong mã `euc-kr`. Ở đây, ký tự thỏa mãn để tạo thành sẽ có giá trị hex từ `a1` đến `fe`.
+
+Em chọn là `%a9` khi nhập thẳng vào URL : `%a9%27` sẽ trở thành `%a9%5c%27` (`%27` ở đâu là `'`) vì vậy đã inject được `'` thành công.
+
+Tiếp theo tìm câu truy vấn để khai thác: 
+
+Hàm `preg_match("/admin|select|limit|pw|=|<|>/i",$_GET['id'])` nếu thấy `$_GET['id']` có chứa `admin`, `select`, `limit`, `pw`, `=`, `>`, `<` thì sẽ thực hiện `exit()` => false
 
