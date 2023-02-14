@@ -97,7 +97,11 @@ Nhập dữ liệu với giá trị boolean
 
 Bắt đầu vào chall nhận thấy có một form có 2 input có name là `id` và `pw` sẽ được truyền bằng GET method khi submit.
 
+![image](https://user-images.githubusercontent.com/92881216/218797551-49e795f1-ed79-41d7-8b90-6e887d50b822.png)
+
 Xem source code em thấy các giá trị tham số `id` và `pw` sẽ được lấy từ GET method và được xử lý qua các hàm `addslashes()`, `mb_convert_encoding()`, `preg_match()`. Sau cùng sẽ đưa chúng vào câu truy vấn tới db. Nếu câu truy vấn trả về kết quả và kết quả đó có giá trị của key `id` bằng với `admin` thì chall sẽ được giải (`if($result['id'] == "admin") solve(45);`)
+
+![image](https://user-images.githubusercontent.com/92881216/218797704-74fb43c3-2451-4004-8099-41b52aca902c.png)
 
 - Với hàm `addslashes()`: Đây là hàm sẽ thêm ký tự gạch chéo ngược `\` vào trước các ký tự `'`, `"`, `\` và NULL. Như vậy là đã ngăn chặn được 1 phần tránh bị inject
 - Với hàm `mb_convert_encoding()` ở trong bài này sẽ chuyển đổi `$_GET['id']` từ bản mã euc-kr sang bảng mã utf-8.
@@ -108,7 +112,20 @@ Nhận thấy `\` encode là `%5c`. Khi inject các ký tự đặc biệt như 
 
 Em chọn là `%a9` khi nhập thẳng vào URL : `%a9%27` sẽ trở thành `%a9%5c%27` (`%27` ở đâu là `'`) vì vậy đã inject được `'` thành công.
 
+Câu truy vấn trở thành: `select id from chall45 where id='%a9\' (inject) ' and pw=md5('a')`
+
 Tiếp theo tìm câu truy vấn để khai thác: 
 
 Hàm `preg_match("/admin|select|limit|pw|=|<|>/i",$_GET['id'])` nếu thấy `$_GET['id']` có chứa `admin`, `select`, `limit`, `pw`, `=`, `>`, `<` thì sẽ thực hiện `exit()` => false
+
+Để câu truy vấn trả về `id` và có giá trị là `admin` em nghĩ đến đoạn inject tiếp theo là: `or id=admin -- -` hoặc `or 1=1 limit 1` nhưng bị false bởi hàm `preg_match()` khi không cho phép dấu `=` hay `limit` hay`admin`
+
+Vì vậy em thay dấu bằng `like` mà mã hóa `admin` dưới dạng hex đc `0x61646d696e` và thành công.
+
+payload: `%a9%27or id like 0x61646d696e --`
+
+<img src="https://user-images.githubusercontent.com/92881216/218797056-d5f72dad-6dad-4936-b64c-39dbf5139a8c.png" />
+
+
+
 
