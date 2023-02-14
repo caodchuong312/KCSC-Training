@@ -122,7 +122,7 @@ Hàm `preg_match("/admin|select|limit|pw|=|<|>/i",$_GET['id'])` nếu thấy `$_
 
 Vì vậy em thay dấu bằng `like` mà mã hóa `admin` dưới dạng hex đc `0x61646d696e` và thành công.
 
-payload: `%a9%27or id like 0x61646d696e --`
+> payload: `%a9%27or id like 0x61646d696e --`
 
 <img src="https://user-images.githubusercontent.com/92881216/218797056-d5f72dad-6dad-4936-b64c-39dbf5139a8c.png" />
 
