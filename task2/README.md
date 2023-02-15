@@ -127,5 +127,37 @@ Vì vậy em thay dấu bằng `like` mà mã hóa `admin` dưới dạng hex đ
 <img src="https://user-images.githubusercontent.com/92881216/218797056-d5f72dad-6dad-4936-b64c-39dbf5139a8c.png" />
 
 
+**old-49**
+
+`Description`: 1 input và source code
+
+<img src="https://user-images.githubusercontent.com/92881216/219080250-56c06b4c-e682-4ad8-b2a6-61fb297b16de.png" width="300px" />
+```
+<?php
+  include "../../config.php";
+  if($_GET['view_source']) view_source();
+?><html>
+<head>
+<title>Challenge 49</title>
+</head>
+<body>
+<h1>SQL INJECTION</h1>
+<form method=get>
+level : <input name=lv value=1><input type=submit>
+</form>
+<?php
+  if($_GET['lv']){
+    $db = dbconnect();
+    if(preg_match("/select|or|and|\(|\)|limit|,|\/|order|cash| |\t|\'|\"/i",$_GET['lv'])) exit("no hack");
+    $result = mysqli_fetch_array(mysqli_query($db,"select id from chall49 where lv={$_GET['lv']}"));
+    echo $result[0] ;
+    if($result[0]=="admin") solve(49);
+  }
+?>
+<hr><a href=./?view_source=1>view-source</a>
+</body>
+</html>
+```
+
 
 
