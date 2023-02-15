@@ -124,7 +124,7 @@ Vì vậy em thay dấu bằng `like` mà mã hóa `admin` dưới dạng hex đ
 
 > payload: `%a9%27or id like 0x61646d696e --`
 
-<img src="https://user-images.githubusercontent.com/92881216/218797056-d5f72dad-6dad-4936-b64c-39dbf5139a8c.png" />
+<img src="https://user-images.githubusercontent.com/92881216/218797056-d5f72dad-6dad-4936-b64c-39dbf5139a8c.png" width=800px/>
 
 
 **old-49**
@@ -132,6 +132,7 @@ Vì vậy em thay dấu bằng `like` mà mã hóa `admin` dưới dạng hex đ
 `Description`: 1 input và source code
 
 <img src="https://user-images.githubusercontent.com/92881216/219080250-56c06b4c-e682-4ad8-b2a6-61fb297b16de.png" width="300px" />
+
 ```
 <?php
   include "../../config.php";
@@ -158,6 +159,7 @@ level : <input name=lv value=1><input type=submit>
 </body>
 </html>
 ```
+Nhìn qua source code thì ta thấy hàm preg_match() đã chặn các từ và ký tự được gửi lên như: `select`, `or`, `(`, `)`, `'` ...
 
 
 
