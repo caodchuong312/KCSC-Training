@@ -174,7 +174,9 @@ Và cuối cùng thì để `lv` bằng với một giá trị nào đó mà nó
  
  Câu truy vấn lúc đó sẽ là: `select id from chall49 where lv=0||id=0x61646d696e--`
  
- <img src="https://user-images.githubusercontent.com/92881216/219336362-16cfffcf-31a9-4eb5-93bb-f072f177a86e.png" width=300px />
+ <img src="https://user-images.githubusercontent.com/92881216/219342998-03d868ec-dc2f-42f5-84f7-49cc57b7f4b4.png" width=300px />
+
+
  
 
 
