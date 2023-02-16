@@ -120,7 +120,7 @@ Hàm `preg_match("/admin|select|limit|pw|=|<|>/i",$_GET['id'])` nếu thấy `$_
 
 Để câu truy vấn trả về `id` và có giá trị là `admin` em nghĩ đến đoạn inject tiếp theo là: `or id=admin -- -` hoặc `or 1=1 limit 1` nhưng bị false bởi hàm `preg_match()` khi không cho phép dấu `=` hay `limit` hay`admin`
 
-Vì vậy em thay dấu bằng `like` mà mã hóa `admin` dưới dạng hex đc `0x61646d696e` và thành công.
+Vì vậy em thay dấu `=` thành `like` mà mã hóa `admin` dưới dạng hex đc `0x61646d696e`vì trong SQL thì string có thể biểu diễn được dạng hex.
 
 > payload: `%a9%27or id like 0x61646d696e --`
 
@@ -130,8 +130,6 @@ Vì vậy em thay dấu bằng `like` mà mã hóa `admin` dưới dạng hex đ
 **old-49**
 
 `Description`: 1 input và source code
-
-<img src="https://user-images.githubusercontent.com/92881216/219080250-56c06b4c-e682-4ad8-b2a6-61fb297b16de.png" width="300px" />
 
 ```
 <?php
@@ -159,7 +157,28 @@ level : <input name=lv value=1><input type=submit>
 </body>
 </html>
 ```
-Nhìn qua source code thì ta thấy hàm preg_match() đã chặn các từ và ký tự được gửi lên như: `select`, `or`, `(`, `)`, `'` ...
+Để giải bài này thì kết quả câu truy vấn trả về với `id` có giá trị là `admin`.
+
+Nhìn qua source code thì ta thấy hàm `preg_match()` đã chặn các từ và ký tự được gửi lên như: `select`, `or`, `(`, `)`, `'` ...
+Khi submit với giá trị là 1 thì có kết quả trả về và xem câu truy vấn ta sẽ biết được `lv` có kiểu dữ liệu là int. 
+
+<img src="https://user-images.githubusercontent.com/92881216/219328274-1f347f68-f793-4605-81e3-cddc4d313f3c.png" width=300px />
+
+Vì vậy bài này đơn giản chỉ cần inject vào 1 điều kiện trong biểu thức `WHERE` để trả về `id` có giá trị là `admin`
+
+Toán tử `OR` bị filter nhưng ở đây trong biểu thức `WHERE` có thể dùng `||` thay thế được.
+Với `admin` thì mã hóa sang hex được `0x61646d696e` vì trong SQL thì string có thể biểu diễn dưới dạng hex.
+Còn ` ` (spaces) thì có thể biểu diễn bởi %0a, %0b, %0c, %0d, %09, %a0 ... ( Ở bài này không cần spaces cũng được)
+Và cuối cùng thì để `lv` bằng với một giá trị nào đó mà nó không trả về để đảm bảo kết quả trả về chỉ có 1 giá trị đó là `admin` là do điều kiện phía sau 
+ > payload : `0||id=0x61646d696e--`
+ 
+ Câu truy vấn lúc đó sẽ là: `select id from chall49 where lv=0||id=0x61646d696e--`
+ 
+ <img src="https://user-images.githubusercontent.com/92881216/219336362-16cfffcf-31a9-4eb5-93bb-f072f177a86e.png" width=300px />
+ 
+
+
+
 
 
 
