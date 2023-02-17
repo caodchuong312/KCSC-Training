@@ -133,7 +133,7 @@ Trường hợp này không thể nhìn thấy kết quả truy vấn lỗi như
 Sử dụng sqlmap, sử dụng các wordlists về payload để brute-force...
 ### Thêm ...
 #### filter spaces
-Sử dụng  %0a, %0b, %0c, %0d, %09, %a0 để thay thế space ` `.
+Sử dụng  `%0a`, `%0b`, `%0c`, `%0d`, `%09`, `%a0`, `/**/`, ... để thay thế space ` `.
 #### filter SELECT...
 Trong trường hợp bị thay thế SELECT với null, có thể dùng từ lồng nhau như `SESELECTLECT` ...
 #### case matching
@@ -148,14 +148,27 @@ Là trường hợp trong truy vấn có thể không phải là truy vấn đ�
 -1' union select 0x2d312720756e696f6e2073656c656374206c6f67696e2c70617373776f72642066726f6d2075736572732d2d2061 -- 
 ```
 
- 
- 
- 
+## Phòng chống
+### Prepared Statements (Tham số hóa)
+- Java: Sử dụng `PreparedStatement()`.
+- .NET: Sử dụng `SqlCommand()` hoặc `OleDbCommand()`.
+- PHP: Sử dụng POD.
+- Sqlite: Sử dụng `sqlite3_prepare()`.
+### Stored Procedures
+Là tính năng của database sử dụng đề giảm thiểu việc nhập dữ liệu trực tiếp vào các câu lệnh SQL.
+
+Khi sử dụng Stored Procedures, các tham số đầu vào được truyền từ ứng dụng của bạn sẽ được xử lý bởi RDBMS trước khi được thêm vào câu lệnh SQL. Điều này giúp ngăn chặn việc nhập các ký tự đặc biệt hoặc dấu phân cách trong các trường đầu vào, ngăn chặn việc nhập các câu lệnh SQL phức tạp, và giúp bảo vệ cơ sở dữ liệu khỏi các cuộc tấn công SQL Injection.
+### Xác thực đầu vào
+Cho phép và ngăn chặn 1 số đầu vào như 1 số ký tự đặc biệt ảnh hưởng đến truy vấn và xử lý dữ liệu trên server
+### Escaping All User-Supplied Input (EAUI)
+Là một kỹ thuật để ngăn chặn các cuộc tấn công SQL Injection bằng cách "escape" tất cả các giá trị đầu vào được cung cấp bởi người dùng trước khi chúng được sử dụng để truy vấn cơ sở dữ liệu.
+
+
  
  # Thực hành:
  ## webhacking.kr
 
-**old-45**
+### old-45
 
 `Description`: 1 form đăng nhập và source code.
 
@@ -225,7 +238,7 @@ Vì vậy em thay dấu `=` thành `like` mà mã hóa `admin` dưới dạng he
 <img src="https://user-images.githubusercontent.com/92881216/218797056-d5f72dad-6dad-4936-b64c-39dbf5139a8c.png" width=800px/>
 
 
-**old-49**
+### old-49
 
 `Description`: 1 input và source code
 
@@ -273,6 +286,12 @@ Và cuối cùng thì để `lv` bằng với một giá trị nào đó mà nó
  Câu truy vấn lúc đó sẽ là: `select id from chall49 where lv=0||id=0x61646d696e--`
  
  <img src="https://user-images.githubusercontent.com/92881216/219342998-03d868ec-dc2f-42f5-84f7-49cc57b7f4b4.png" width=300px />
+ 
+ 
+  ## Rootme
+  ### SQL injection - Blind
+  `Description`: 1 form đăng nhập
+  
 
 
  
