@@ -51,9 +51,6 @@
 </html>
 <?php 
 require "config.php";
-// if($conn){
-// 	echo "connect successfully";
-// }
 if(isset($_GET['type'])){
 	$type=$_GET['type'];
 	echo "<br>";
@@ -61,24 +58,26 @@ if(isset($_GET['type'])){
 	echo "selected: ".$type;
 	echo "<br>";
 	echo "<br>";
-
-	$sql="SELECT * from products where type= '$type' ";
+	$sql="SELECT * from products where type= '$type'";
 	$result = mysqli_query($conn,$sql);
 	if (!$result) {
     	die("Truy vấn không thành công");
 	}
 	else{
-		echo '<table>';
-		echo '<tr><th>Name</th><th>Price</th><th></th></tr>';
-		while ($row = mysqli_fetch_array($result)) {
-		  echo '<tr>';
-		  echo '<td>' . $row['name'] . '</td>';
-		  echo '<td>' . $row['price'] . '</td>';
-		  echo '<td><a class="detail" href=detail.php>Xem chi tiết</a></td>';
-		  echo '</tr>';
+		if($row = mysqli_fetch_array($result)){
+			echo '<table>';
+			echo '<tr><th>Name</th><th>Price</th><th></th></tr>';
+			while ($row = mysqli_fetch_array($result)) {
+			  echo '<tr>';
+			  echo '<td>' . $row['name'] . '</td>';
+			  echo '<td>' . $row['price'] . '</td>';
+			  echo '<td><a class="detail" href=detail.php>Xem chi tiết</a></td>';
+			  echo '</tr>';
+			}
+			echo '</table>';
 		}
-		echo '</table>';
+		else{
+			die("server error");
+		}		
 	}
-	
-
 }
