@@ -30,7 +30,7 @@ if(isset($_POST['username']) && isset($_POST['password'])){
 				echo "correct!!!";		
 		}			
 	}else{
-		die("incorrect");	
+		die("incorrect!");	
 	}
 	
 }
