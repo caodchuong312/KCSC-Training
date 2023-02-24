@@ -71,7 +71,7 @@ if(isset($_GET['type'])){
 			  echo '<tr>';
 			  echo '<td>' . $row['name'] . '</td>';
 			  echo '<td>' . $row['price'] . '</td>';
-			  echo '<td><a class="detail" href=detail.php>Xem chi tiết</a></td>';
+			  echo '<td><a class="detail" href="" >Xem chi tiết</a></td>';
 			  echo '</tr>';
 			}
 			echo '</table>';
