@@ -21,13 +21,17 @@ if(isset($_POST['username']) && isset($_POST['password'])){
 	error_reporting(0);
 	$username= $_POST['username'];
 	$password= $_POST['password'];
-	if (preg_match('/union|length|substr|from/i', $username))
-        echo $username;
-    if (preg_match('/union|length|substr|from/i', $password))
-        echo $username;
+	if (preg_match('/union|length|substr|from/i', $username)){
+        	echo $username;
+	}
+    	if (preg_match('/union|length|substr|from/i', $password)){
+        	echo $username;
+   	}
 	$sql="select * from users where username= '$username' and password='$password'";
-	$result=mysqli_query($conn,$sql);
+	$result=mysqli_query($conn,$sql);	
+	if(!mysqli_fetch_array($result)){
+		echo $username;	
+	}
 	$row= mysqli_fetch_array($result);
 	echo $username;
-	
 }
