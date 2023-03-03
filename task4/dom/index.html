@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DOM Based XSS</title>
+    <style>
+      select {
+        padding: 0.5em;
+        margin-right: 1em;
+        border-radius: 0.25em;
+        border: 1px solid #ccc;
+      }
+      button {
+        padding: 0.5em 1em;
+        border-radius: 0.25em; 
+        border: none;
+        background-color: #0077cc;
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+      <form action=/ method=GET>
+        <select name="search">
+          <option value="cat">cat</option>
+          <option value="dog">dog</option>
+          <option value="bird">bird</option>
+          <option value="pig">pig</option>
+          <option value="bee">bee</option>
+        </select>
+        <button type="submit" class="button">Display</button>
+    </form>     
+  <script>
+      var animal = (new URLSearchParams(window.location.search)).get('search');
+      if(animal) {
+          document.write('<br><img width=500px src="/image/'+animal+'.jpg" >');
+      }
+  </script>
+  </body>
+</html>
