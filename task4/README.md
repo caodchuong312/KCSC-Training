@@ -77,9 +77,9 @@ Khi trình duyệt thực hiện mã độc này sẽ chuyển hướng đến s
 #### Mức độ của tấn công
 Giống với các cuộc tấn công khác của XSS, kẻ tấn công có thể ăn căp thông tin quan trọng người dùng, thực hiện các hành động khác ... 
 ## Cách khai thác và bypass
-- Tìm kiếm và quan sát các đầu vào như ô tìm kiếm, form, URL, parameters, HTTP header, ... nơi mà kẻ tấn công chèn có thể chèn mã độc.
+- Tìm kiếm và quan sát các đầu vào và đầu ra như ô tìm kiếm, form, URL, parameters, HTTP header, ... nơi mà kẻ tấn công chèn có thể chèn mã độc.
 - Sau đó kẻ tấn công sẽ kiểm tra đầu vào bằng một số ký tự, các tag của html, scripts... rồi xem xét phản hồi nhận được. Test các phương thức trong js xem cách trình duyệt xử lý như `alert()`, `prompt()`.
-- Từ đó xác định nó thuộc loại lỗ hổng XSS nào rồi khai thác như phần trên theo từng loại.
+- Từ đó xác định loại lỗ hổng XSS nào rồi khai thác theo từng loại.
 
 ### Một số kỹ thuật và cách bypass
 #### Fuzz/Brute-Force
@@ -100,11 +100,10 @@ Kỹ thuật obfuscation:
 - Dùng các ký tự null bytes: `<scri%00pt>alert(1);</scri%00pt>`
 
 ## Cách ngăn chặn XSS
-### Xử lý đầu vào
 - Lọc đầu vào: Sử dụng blacklist, whitelist, filters, regex, ...
-- Mã hóa đầu ra để không hiển thị các ký tự đặc biệt nhằm tấn công
+- Xử lý đầu ra, mã hóa ký tự đặc biệt nhằm tấn công.
 - Sử dụng các thư viện và frameworks an toàn.
-- Sử dụng HTTP-only Cookies để tránh bị đánh cắp, CSP để kiểm soát tài nguyên ngoài.
+- Sử dụng HTTP-only Cookies để tránh bị đánh cắp, CSP để kiểm soát tài nguyên ngoài, các response headers trả kết quả đúng cách.
 - Thường xuyên cập nhật phần mềm, các dạng tấn công mới 
 
 
