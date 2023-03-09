@@ -12,7 +12,7 @@ Pro
 ```
 
 # Rootme:
-## XSS Reflected:
+## XSS Reflected
 **Description**:`Find a way to steal the administrator’s cookie.` </br>
 `Be careful, this administrator is aware of info security and he does not click on strange links that he could receive.`
 
@@ -92,7 +92,7 @@ Kết quả:
 > `flag=rootme{XSS_D0M_BaSed_InTr0}`
 
 
-## XSS DOM based-AngularJS:
+## XSS DOM based-AngularJS
 **Description:** `Steal the admin’s session cookie.`
 
 ![image](https://user-images.githubusercontent.com/92881216/223958684-e8b9af91-bdec-46bc-ad10-f92abd86bf46.png)
