@@ -89,4 +89,15 @@ Ngoài ra server có thể đặt file ở thư mục ngoài web server.
 - Xác thực ở một nơi khác an toán trước khi đưa nó vào server.
 - Giới hạn quyền truy cập thư mục, file thực thi.
 
+---
+
+**Tham khảo thêm:**
+- https://portswigger.net/web-security/file-upload
+- https://viblo.asia/p/khai-thac-cac-lo-hong-file-upload-phan-1-aWj53L6pK6m
+- https://book.hacktricks.xyz/pentesting-web/file-upload
+
+---
+
+# Rootme
+
  
