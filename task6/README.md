@@ -100,4 +100,127 @@ Ngoài ra server có thể đặt file ở thư mục ngoài web server.
 
 # Rootme
 
- 
+## File upload - Double extensions
+**Description:** Your goal is to hack this photo galery by uploading PHP code.
+Retrieve the validation password in the file .passwd at the root of the application.
+
+Lượn 1 vòng web, dễ dàng thấy được nơi có chức năng upload file
+
+![image](https://user-images.githubusercontent.com/92881216/225677085-e95bdad9-0a3e-429e-8ed2-0df7c0ec4358.png)
+
+Mục tiêu của bài là đọc file .passwd vì vậy ta sẽ tạo 1 file php để khai thác:
+```
+<?php
+system($_GET['cmd']);
+?>
+```
+Bây giờ gửi file lên xem sao.
+
+![image](https://user-images.githubusercontent.com/92881216/225680807-a2928207-6a41-4f95-869c-914f2e4f892b.png)
+
+Như vậy là server từ chối file có extension là `php` và chỉ cho phép `.gif`, `.jpeg` và `.png` . Nhìn lại tiêu đề là `Double extension` có thể biết cách để bypass trường hợp này là sử dụng `.php.jpg`.
+
+Bây giờ dùng Burp Suite để thực hiện lại:
+
+![image](https://user-images.githubusercontent.com/92881216/225682242-cce714c6-5ef7-41e0-821d-1967ba24b5b5.png)
+
+Vậy là gửi lên thành công và bây giờ mở file mà thực hiện câu lệnh:
+
+![image](https://user-images.githubusercontent.com/92881216/225683381-4954d3ff-e5af-4e20-85fd-72f3cce2e455.png)
+
+Bây giờ chỉ việc tìm phải và đọc nó thôi:
+
+![image](https://user-images.githubusercontent.com/92881216/225683820-9147268d-380f-4b87-aa27-076780a3ac47.png)
+
+> `Gg9LRz-hWSxqqUKd77-_q-6G8`
+
+## File upload - MIME type
+**Description:** Your goal is to hack this photo galery by uploading PHP code.
+Retrieve the validation password in the file .passwd.
+
+Cũng như bài trước. Chức năng upload file: 
+
+![image](https://user-images.githubusercontent.com/92881216/225684818-ddcb6e05-ada3-43b3-832e-eef9b71225a0.png)
+
+Up thử file php khai thác như bài trên:
+
+![image](https://user-images.githubusercontent.com/92881216/225685566-a7090e27-7775-4e4d-b18d-0e89c25132c8.png)
+
+Nhìn lại tiêu để là `MIME type` như vậy có thể server sẽ xác thực file dựa vào MIME hay ở đây là `Content-Type` header. Ở trên giá trị hiện tại là `application/octet-stream` là 1 MIME type được sử dụng để chỉ định dữ liệu nhị phân không xác định định dạng cụ thể của tập tin. Vì vậy ta cần thay đổi giá trị thành `image/jpeg` để server hiểu file gửi lên là hình ảnh:
+
+![image](https://user-images.githubusercontent.com/92881216/225687021-074fa65e-8452-4e83-a8b2-46e9998ab2fd.png)
+
+Vậy là gửi lên thành công, bây giở mở nó và thực thi command thôi:
+
+![image](https://user-images.githubusercontent.com/92881216/225687513-e73305b0-25bb-4499-ae4d-d960fce9b078.png)
+
+> a7n4nizpgQgnPERy89uanf6T4`
+
+## File upload - Null byte
+**Description:** Your goal is to hack this photo galery by uploading PHP code.<br>
+Chức năng upload file: 
+
+![image](https://user-images.githubusercontent.com/92881216/225687909-ace978e0-4e42-427a-bb9d-03f06c0687ac.png)
+
+Cũng như 2 bài trên server chỉ cho phép GIF, JPEG và PNG. Nhìn tiêu để bài biết được hướng khai thác là dùng `null` bytes.
+
+`Null` byte là ký tự rỗng mang giá trị bằng 0, nó dùng biểu diễn 1 byte không có giá trị. Ở đây server sẽ kiểm tra extension xem được phép hay không tuy nhiên khác với bài double extension. Ta sử dụng tên tệp `shell.php%00.jpg`, đại khái ở đây server sử dụng php và nó sẽ đọc tên file đến khi gặp `null` byte sẽ dừng nghĩa là khi đó tên file sẽ là `shell.php`. (Tuy nhiên kể từ PHP 5.3.4 thì null byte không dùng được nữa)
+
+Bây giờ gửi thử với filename : `shell.php%00.jpg` tuy nhiên server vẫn chặn và biết được nó còn xác thực dựa vào `Content-type`, đổi giá trị sang `image/jpeg` như bài trước và gửi lại: 
+
+![image](https://user-images.githubusercontent.com/92881216/225691395-4ec0b5d5-17e8-4bd3-9362-2a27df917c95.png)
+Mở file vừa gửi lên: 
+![image](https://user-images.githubusercontent.com/92881216/225691529-0e5de83b-cbaf-4784-84df-33fe40ba5421.png)
+> `YPNchi2NmTwygr2dgCCF`
+
+## File upload - ZIP
+**Description:** Your goal is to read index.php file.
+
+Khác với các bài trước thì bài này chỉ cho phép upload file zip và có chức năng giải nén:
+![image](https://user-images.githubusercontent.com/92881216/225692443-cd525dba-f580-46f7-99ca-b8e6cef827ec.png)
+
+Ý tưởng bài này khá rõ ràng là sẽ nén các file php lại thành file zip rồi dùng giải nén trên web để thực thi mã độc.<br>
+Tuy nhiên để chắc chắn và không mất thời gian thì em sẽ tạo thêm các file nội dung tương ứng nhưng khác tên để bypass khi server có xác thực :
+
+![image](https://user-images.githubusercontent.com/92881216/225693836-f5570b8f-9b46-4d9e-ae1e-c9b6239de4b1.png)
+
+Nén chúng lại rồi gửi lên. Tuy nhiên tất cả đều fail:
+
+![image](https://user-images.githubusercontent.com/92881216/225694451-160e1a47-0a21-4c92-9c5d-c9baad2de861.png)
+
+Không bỏ cuộc em tạo file `.htaccess` với nội dung `AddType application/x-httpd-php .php` để ghi đè cấu hình, nén chúng lại rồi gửi lên rồi lại giải nén nhưng vẫn fail.
+
+Đến đây khác bế tắc, nhìn lại tiêu đề `File upload - ZIP` và mục tiêu bài này là đọc file `index.php` đây có thể là source code. Khi đó em nhớ tới video <a href='https://www.youtube.com/watch?v=5mapJQ7TFyc' >này</a>.<br>
+Tóm tắt lại nội dung video là dùng `symlink` để tấn công.<br>
+`Symlink` (Symbolic link) là một loại link liên kết và trỏ đến 1 file khác trong linux. Thực hành:<br>
+Bài yêu câu đọc file `index.php` và quan sát thư mục chứa file được upload muốn trỏ tới `index` thì nó sẽ là `../../../index.php`.
+
+Bây giở mở linux lên vào tạo 1 symlink bằng command: 
+```
+ln -s ../../../index.php link
+```
+Sau đó nén nó thành zip (có thể đọc trong docs đc cho):
+```
+zip -y link.zip link
+```
+![image](https://user-images.githubusercontent.com/92881216/225699065-1ca2d412-6f6d-4cc4-a8fb-1e8af8dc7b43.png)
+
+Sau đó gửi file zip này lên (ở đây là link.zip) và unzip:
+![image](https://user-images.githubusercontent.com/92881216/225699431-6f434cc0-da38-406f-ad0b-ebbb5105715e.png)
+
+Mở lên và :
+
+![image](https://user-images.githubusercontent.com/92881216/225699537-46c95c1e-3a03-4648-9cc4-84370b9de671.png)
+
+Như vậy là thành công.
+
+> Flag: `N3v3r_7rU5T_u5Er_1npU7`
+
+
+
+
+
+
+
+
+
