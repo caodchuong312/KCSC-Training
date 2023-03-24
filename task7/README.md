@@ -3,31 +3,18 @@
 
 `Xây dựng lab tấn công demo cả 2 loại.`
 
-`Làm hết các bài liên quan trên rootme`
-# LFI (Local File Inclusion)
-### Khái niệm
-Đây là Ký thuật mà kẻ tấn công dùng để truy cập và hiện thị vào các file trên hệ thống máy chủ. Nó xảy ra khi kẻ tấn công chèn đường dẫn local qua HTTP request tới máy chủ
-### Nguyên nhân
-Nguyên nhân chính là do máy chủ không kiểm tra và xác thực đầu vào từ phía người dùng như các đường link dạng `php?file=...` ... Khi web sử dụng cách hàm như `include`,`require`... mà không xác thực thì dẫn đến việc kẻ tấn công sẽ thay đổi giá trị của tham số để xem hoặc thực thi các tệp trên máy chủ web. Ngoài ra còn do việc không kiểm soát dẫn không được quyền truy cập file hay đường dẫn trên hệ thống.
-### Tác hại
-  - Kẻ tấn công sẽ truy cập và đọc được thông tin nhạy cảm như `/etc/passwd`, các cấu hình, các file nhạy cảm... hoặc có thể thực thi các file khác.
-  - Dẫn đến các cuộc tấn công khác nhứ XSS, DOS, Command Injection,..
-# RFI (Remote Fle Iclusion)
-### Khái niệm 
-Đây là kỹ thuật mà kẻ tấn công có thể include 1 file hoặc chèn file mã độc từ một máy chủ khác vào trong trang web bằng cách sử dụng đường dẫn tuyệt đối đến các tệp tin từ xa. RFI thường được sử dụng như một phương pháp tấn công phụ để thực hiện các cuộc tấn công khác.
-### Nguyên nhân
-- Thiếu kiểm tra và xác thực đầu vào: kẻ tấn công từ đó có thể chèn mã độc
-- Sử dụng các hàm như `include`, `require`và không xác thực đúng cách
-### Tác hại
+`Làm hết các bài liên quan trên rootme`<br>
+
+## Khái niệm
+- LFI (Local File Inclusion): Đây là Ký thuật mà kẻ tấn công dùng để truy cập và hiện thị vào các file trên hệ thống máy chủ. Nó xảy ra khi kẻ tấn công chèn đường dẫn local qua HTTP request tới máy chủ.
+- RFI (Remote Fle Iclusion): Đây là kỹ thuật mà kẻ tấn công có thể include 1 file hoặc chèn file mã độc từ một máy chủ khác vào trong trang web bằng cách sử dụng đường dẫn tuyệt đối đến các tệp tin từ xa. RFI thường được sử dụng như một phương pháp tấn công phụ để thực hiện các cuộc tấn công khác.
+## Nguyên nhân
+Nguyên nhân chính là do máy chủ không kiểm tra và xác thực đầu vào từ phía người dùng như các đường link dạng `php?file=...` ... Khi web sử dụng cách hàm như `include`,`require`... mà không xác thực thì dẫn đến việc kẻ tấn công sẽ thay đổi giá trị của tham số để xem hoặc thực thi các tệp trên máy chủ web. Ngoài ra còn do việc không kiểm soát dẫn không được quyền truy cập file hay đường dẫn trên hệ thống hay do cấu hình server dễ bị tấn công như `allow_url_fopen`, `allow_url_include`
+## Tác hại
 Tác của RFI cao hơn LFI vì các lỗ hổng RFI cho phép kẻ tấn công thực thi lệnh từ xa (RCE) trên máy chủ.<br>
-- Truy cập và xem các file nhạy cảm.
-- Thực thi mã độc: dẫn đến việc chiếm được quyền hệ thống.
+- Kẻ tấn công sẽ truy cập và đọc được thông tin nhạy cảm như `/etc/passwd`, các cấu hình, các file nhạy cảm... hoặc có thể thực thi các file khác.
+- Thực thi mã độc: có thể dẫn đến việc chiếm được quyền hệ thống.
 - Thực thi các cuộc tấn công khác: Dos, SQL injection, XSS, ...
-### Phòng chống
-- Xác thực đầu vào an toàn như sử dụng whitelist...
-- Giới hạn quyền truy cập vào hệ thống.
-- Tắt các options `allow_url_fopen`, `allow_url_include` trong cấu hình server
-- Cập nhật ứng dụng, sử dụng tường lửa...
 ### Bypass LFI,RFI
 Khi tham số được người dùng kiểm soát để đưa vào xử lý, server có thể thêm 1 số filter để ứng dụng hoạt động theo ý muốn. Vì vậy cách bypass tùy theo từng trường hợp:
 - Server thêm extension `.php` phía sau như `include($_GET["page"].".php");`. Khi đó nên sử dụng `null` byte như `%00` hoặc `0x00` dưới dạng hex. Ví dụ: `http://example.com/index.php?page=../../../etc/passwd%00`. Tuy nhiên `null byte` không được sử dụng ở version PHP mới. Thay vào đó có thể sử dụng `./`, nó chỉ thư mục hiện tại : `/etc/passwd/.` 
@@ -44,5 +31,14 @@ Khi tham số được người dùng kiểm soát để đưa vào xử lý, se
   - phar:// 
   - ...
 <br>Xem thêm <a href="https://book.hacktricks.xyz/pentesting-web/file-inclusion" >Hacktricks</a>
+### Phòng chống
+- Xác thực đầu vào an toàn như sử dụng whitelist...
+- Giới hạn quyền truy cập vào hệ thống.
+- Tắt các options `allow_url_fopen`, `allow_url_include` trong cấu hình server
+- Cập nhật ứng dụng, sử dụng tường lửa...
+### So sánh LFI và Path traversal
+- LFI là kỹ thuật tấn công khi kẻ tấn công sử dụng lỗ hổng trong ứng dụng web để đọc các file cục bộ trên máy chủ web, thường là các files cấu hình hay source của ứng dụng web đó. Khi kẻ tấn công có thể đọc được các file này, họ có thể tìm ra các lỗ hổng tiềm năng khác hoặc sử dụng thông tin này để tiến hành các cuộc tấn công khác
+- Path Traversal là kỹ thuật tấn công khi kẻ tấn công sử dụng các ký tự đặc biệt để truy cập đến các files và thư mục bên ngoài thư mục root của ứng dụng web. Khi kẻ tấn công có thể truy cập được các tệp tin và thư mục bên ngoài thư mục root này, họ có thể đọc hoặc sửa đổi các files quan trọng trên máy chủ web, thực hiện các cuộc tấn công khác hoặc thậm chí kiểm soát máy chủ web.
 
-## So sánh LFI và Path traversal
+- Điểm chung: Cả LFI và Path Traversal đều liên quan đến việc đọc file và thư mục bên trong máy chủ web.
+- Khác biệt: LFI tập trung vào việc đọc các files cục bộ và có thể thực thi mã độc trong máy chủ web, trong khi Path Traversal tập trung vào việc truy cập đến các files và thư mục bên ngoài thư mục gốc của ứng dụng web.
