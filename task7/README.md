@@ -30,7 +30,7 @@ Khi tham số được người dùng kiểm soát để đưa vào xử lý, se
   - zip:// và rar://
   - phar:// 
   - ...
-<br>Xem thêm <a href="https://book.hacktricks.xyz/pentesting-web/file-inclusion" >Hacktricks</a>
+<br>**Xem thêm** <a href="https://book.hacktricks.xyz/pentesting-web/file-inclusion" >Hacktricks</a>
 ### Phòng chống
 - Xác thực đầu vào an toàn như sử dụng whitelist...
 - Giới hạn quyền truy cập vào hệ thống.
@@ -42,9 +42,7 @@ Khi tham số được người dùng kiểm soát để đưa vào xử lý, se
 - Điểm chung: Cả LFI và Path Traversal đều liên quan đến việc đọc file và thư mục bên trong máy chủ web. Về tác hại thì cả 2 đều có thể dẫn đến việc tiết lộ thông tin nhạy cảm, mất dữ liệu và mất kiểm soát về hệ thống.
 - Khác nhau: LFI tập trung vào việc đọc các files cục bộ và có thể thực thi mã độc trong máy chủ web, trong khi Path Traversal tập trung vào việc truy cập đến các files và thư mục bên ngoài thư mục gốc của ứng dụng web.
 
-#### LAB, Root-me
-<a href="https://github.com/caodchuong312/KCSC-Training/tree/main/task7/LFI_lab" >LFI</a>
-
-<a href="https://github.com/caodchuong312/KCSC-Training/tree/main/task7/RFI_lab" >RFI</a>
-
-<a href="https://github.com/caodchuong312/KCSC-Training/tree/main/task7/Root-me" >Root-me</a>
+#### Lab, Root-me
+- <a href="https://github.com/caodchuong312/KCSC-Training/tree/main/task7/LFI_lab" >LFI</a>
+- <a href="https://github.com/caodchuong312/KCSC-Training/tree/main/task7/RFI_lab" >RFI</a>
+- <a href="https://github.com/caodchuong312/KCSC-Training/tree/main/task7/Root-me" >Root-me</a>
