@@ -39,9 +39,8 @@ Khi tham số được người dùng kiểm soát để đưa vào xử lý, se
 ### So sánh LFI và Path traversal
 - LFI là kỹ thuật tấn công khi kẻ tấn công sử dụng lỗ hổng trong ứng dụng web để đọc các file cục bộ trên máy chủ web, thường là các files cấu hình hay source của ứng dụng web đó. Khi kẻ tấn công có thể đọc được các file này, họ có thể tìm ra các lỗ hổng tiềm năng khác hoặc sử dụng thông tin này để tiến hành các cuộc tấn công khác
 - Path Traversal là kỹ thuật tấn công khi kẻ tấn công sử dụng các ký tự đặc biệt để truy cập đến các files và thư mục bên ngoài thư mục root của ứng dụng web. Khi kẻ tấn công có thể truy cập được các tệp tin và thư mục bên ngoài thư mục root này, họ có thể đọc hoặc sửa đổi các files quan trọng trên máy chủ web, thực hiện các cuộc tấn công khác hoặc thậm chí kiểm soát máy chủ web.
-
-- Điểm chung: Cả LFI và Path Traversal đều liên quan đến việc đọc file và thư mục bên trong máy chủ web.
-- Khác biệt: LFI tập trung vào việc đọc các files cục bộ và có thể thực thi mã độc trong máy chủ web, trong khi Path Traversal tập trung vào việc truy cập đến các files và thư mục bên ngoài thư mục gốc của ứng dụng web.
+- Điểm chung: Cả LFI và Path Traversal đều liên quan đến việc đọc file và thư mục bên trong máy chủ web. Về tác hại thì cả 2 đều có thể dẫn đến việc tiết lộ thông tin nhạy cảm, mất dữ liệu và mất kiểm soát về hệ thống.
+- Khác nhau: LFI tập trung vào việc đọc các files cục bộ và có thể thực thi mã độc trong máy chủ web, trong khi Path Traversal tập trung vào việc truy cập đến các files và thư mục bên ngoài thư mục gốc của ứng dụng web.
 
 #### LAB, Root-me
 <a href="https://github.com/caodchuong312/KCSC-Training/tree/main/task7/LFI_lab" >LFI</a>
