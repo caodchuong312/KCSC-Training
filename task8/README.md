@@ -39,3 +39,5 @@ Tham khảo: <a href="https://book.hacktricks.xyz/pentesting-web/ssrf-server-sid
 - Sử dụng whitelist: chỉ định các URL hay các protocols, wrapper hợp lệ mà ứng dụng có thể kiểm soát được.
 - Giới hạn truy cập máy chủ cục bộ, sử dụng cấu hình máy chủ hợp lý.
 - Sử dụng tường lửa, thư viện bảo mật và thường xuyên cập nhật chúng.
+
+#Root-me
