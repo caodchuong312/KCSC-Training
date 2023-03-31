@@ -62,8 +62,7 @@ Như vậy web có vẻ không filter gì, nhưng trong `/etc/passwd` cũng khô
 
 ![image](https://user-images.githubusercontent.com/92881216/229119635-33516819-24a3-4445-9434-936e3f199173.png)
 
-Như vậy nó có thể yêu cầu đến chính server nó. Mặt khác, SSRF có thể khai thác qua các cổng mở khác có thể dấn đến RCE, vì vậy dùng burp suite để test toàn bộ cổng với payload: `http://localhost:x` với x từ 1 -> 65535 và nhận thấy :
-
+Như vậy nó có thể yêu cầu đến chính server nó. Mặt khác, SSRF có thể khai thác qua các cổng mở khác có thể dấn đến RCE, vì vậy dùng burp suite để test toàn bộ cổng với payload: `http://localhost:x` với x từ 1 -> 65535 và nhận thấy cổng `6379` bị Timeout.
 
 Như vậy cổng 6379 được mở, đây là cổng mặc định của `redis`.<br>
 > Redis 6379 là cổng mặc định mà Redis nghe các kết nối. Nó là một kho lưu trữ cấu trúc dữ liệu trong bộ nhớ phổ biến được sử dụng làm cơ sở dữ liệu, bộ đệm và trình môi giới tin nhắn. Đây là một cơ sở dữ liệu nhanh, có thể mở rộng và đáng tin cậy được sử dụng bởi nhiều trang web và ứng dụng phổ biến.
