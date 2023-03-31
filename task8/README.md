@@ -90,6 +90,6 @@ Mặc dù thử rất nhiều lần nhưng em vẫn bị lỗi :
 
 ![image](https://user-images.githubusercontent.com/92881216/229124019-26a57794-41a9-4685-8a5b-53ed77b445fe.png)
 
-
+Và bên nc vẫn ko có hiện tượng gì :(((((
 
 
