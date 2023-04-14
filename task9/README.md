@@ -153,7 +153,7 @@ def sendmail(address, content):
 
 Điểm chú ý ở đây là 1 phần trong `mail`: `{{ hacker_name }}{{ hacker_surname }}{{ hacker_email }}{{ hacker_bday }}.csv`. Các tham số này ta có thể kiểm soát được và nối với nhau, mặt khác thì bị filter `{{`, `{%`,.. nên hướng làm ở đây sẽ tách chúng ra vừa tránh được filter vừa nối lại thành payload.
 
-Nhưng đâu tiên, nó là `Blind SSTI` nên ta sẽ chạy nó ở local để kiểm tra, đồng thời thêm `print(content)` để dễ dang kiểm tra:
+Nhưng đâu tiên, nó là `Blind SSTI` nên ta sẽ chạy nó ở local để kiểm tra, đồng thời thêm `print(content)` để dễ dàng kiểm tra:
 
 ![image](https://user-images.githubusercontent.com/92881216/232048574-ed45d1c7-76c0-4c7c-ac3a-74d7108446d4.png)
 
@@ -195,7 +195,7 @@ Nhưng có vẻ shell này không thực được 😢
 
 Sau đó em lên mạng xem cách khác và đó là sử dụng `curl` 1 trang web chứa shell thay vì command trực tiếp.
 
-Tạo <a href="https://pastebin.com/">pastebin</a> tạo shell được:
+Dùng <a href="https://pastebin.com/">pastebin</a> tạo shell được:
 
 ![image](https://user-images.githubusercontent.com/92881216/232054700-3bc83479-4dcc-46d6-926a-fdc9a8743b72.png)
 
