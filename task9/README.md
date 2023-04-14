@@ -1,7 +1,9 @@
 # SSTI
+Task9:
+```
 Tìm hiểu về SSTI (Khái niệm, nguyên nhân, tác hại + 1 số cách bypass, cách phòng tránh).<br>
 Giải hết các bài SSTI trên rootme
-
+```
 ## Khái niệm 
 SSTI (Server Side Template Injection) là lỗ hổng bảo mật mà khi ứng dụng nhận dữ liệu đầu vào từ người dùng để tạo các template và từ đó kẻ tấn công có thể chèn mã độc nhằm mục đích xấu
 ## Nguyên nhân
