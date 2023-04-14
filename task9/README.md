@@ -12,7 +12,10 @@ SSTI (Server Side Template Injection) là lỗ hổng bảo mật mà khi ứng 
 - Nghiêm trọng nhẫn là dẫn đến RCE, từ đó chiếm quyền kiểm soát toàn bộ máy chủ .
 - Khi không thực hiện được RCE, kẻ tấn công cũng có thể tạo ra nhiều cuộc tấn công khác như: XSS, CSRF,...
 ## Một số cách bypass
-
+## Phòng chống
+- Kiểm tra và xác thực các đầu vào người dùng như sử dụng regex, whitelist để đảm bảo không chứa ký tự có thể chèn mã độc.
+- Sử dụng các template engine an toàn như `Mustache` có tính năng escape các ký tự đặc biệt và thường xuyên cập nhật chúng.
+- Sử dụng `docker` để tạo một môi trường an toàn hạn chế hoạt động độc hại.
 # Rootme
 
 ## Python - Server-side Template Injection Introduction
