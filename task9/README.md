@@ -12,6 +12,22 @@ SSTI (Server Side Template Injection) là lỗ hổng bảo mật mà khi ứng 
 - Nghiêm trọng nhẫn là dẫn đến RCE, từ đó chiếm quyền kiểm soát toàn bộ máy chủ .
 - Khi không thực hiện được RCE, kẻ tấn công cũng có thể tạo ra nhiều cuộc tấn công khác như: XSS, CSRF,...
 ## Một số cách bypass
+- Bypass dấu gạch dưới: sử dụng hàm `request.args` được sử dụng để truy xuất giá trị injection trong các tham số khác nhau.
+- Bypass `[` và `]`: 
+- Bypass `{{}}`: 
+    - Sử dụng `{% %}` ví dụ: `{% if request['application']['__globals__']['__builtins__']['__import__']('os')['popen']('whoami')['read']() == 'chiv\n' %} a {% endif %}`S
+    - Sử dụng `#` ví dụ :
+    ```
+    # for i in request.args:
+    <li>{{ i }}</li>
+    # endfor
+    ```
+- Encode: URL, Hex,... Ví dụ: `http://127.0.0.1:5000/?c={{%22\x41%22}}`
+   
+Tham khảo thêm:
+- https://hackmd.io/@Chivato/HyWsJ31dI
+- https://book.hacktricks.xyz/pentesting-web/ssti-server-side-template-injection/jinja2-ssti
+- ...
 ## Phòng chống
 - Kiểm tra và xác thực các đầu vào người dùng như sử dụng regex, whitelist để đảm bảo không chứa ký tự có thể chèn mã độc.
 - Sử dụng các template engine an toàn như `Mustache` có tính năng escape các ký tự đặc biệt và thường xuyên cập nhật chúng.
