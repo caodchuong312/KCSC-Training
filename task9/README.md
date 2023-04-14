@@ -13,7 +13,6 @@ SSTI (Server Side Template Injection) là lỗ hổng bảo mật mà khi ứng 
 - Khi không thực hiện được RCE, kẻ tấn công cũng có thể tạo ra nhiều cuộc tấn công khác như: XSS, CSRF,...
 ## Một số cách bypass
 - Bypass dấu gạch dưới: sử dụng hàm `request.args` được sử dụng để truy xuất giá trị injection trong các tham số khác nhau.
-- Bypass `[` và `]`: 
 - Bypass `{{}}`: 
     - Sử dụng `{% %}` ví dụ: `{% if request['application']['__globals__']['__builtins__']['__import__']('os')['popen']('whoami')['read']() == 'chiv\n' %} a {% endif %}`S
     - Sử dụng `#` ví dụ :
