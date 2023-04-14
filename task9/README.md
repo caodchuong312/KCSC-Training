@@ -191,9 +191,9 @@ Payload khi gửi lên server:
 
 ![image](https://user-images.githubusercontent.com/92881216/232052898-8ded4a49-a344-4a13-8650-bcc45c87c948.png)
 
-Nhưng có vẻ shell không thực được 😢
+Nhưng có vẻ shell này không thực được 😢
 
-Sau đó em lên mạng xem và đó là sử dụng `curl` 1 trang web chứa shell thay vì command trực tiếp.
+Sau đó em lên mạng xem cách khác và đó là sử dụng `curl` 1 trang web chứa shell thay vì command trực tiếp.
 
 Tạo <a href="https://pastebin.com/">pastebin</a> tạo shell được:
 
