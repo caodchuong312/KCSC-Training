@@ -25,7 +25,7 @@ SSTI (Server Side Template Injection) là lỗ hổng bảo mật mà khi ứng 
    
 Tham khảo thêm:
 - https://hackmd.io/@Chivato/HyWsJ31dI
-- https://book.hacktricks.xyz/pentesting-web/ssti-server-side-template-injection/jinja2-ssti
+- https://book.hacktricks.xyz/pentesting-web/ssti-server-side-template-injection/
 - ...
 ## Phòng chống
 - Kiểm tra và xác thực các đầu vào người dùng như sử dụng regex, whitelist để đảm bảo không chứa ký tự có thể chèn mã độc.
