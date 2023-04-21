@@ -50,4 +50,6 @@ payload: `|ca\t<flag.txt`
 
 ![image](https://user-images.githubusercontent.com/92881216/233629502-e56c3b78-8944-43aa-9414-44a057da6bd3.png)
 
+Ngoài ra có thể khai thác theo hướng khác như: `curl` đến 1 web chứa shell hoặc `wget --post-file` để chuyển nội dung file lên web khác
+
 
