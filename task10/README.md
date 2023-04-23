@@ -13,6 +13,21 @@ Nguyên nhân chính của `code injection` là việc không kiểm tra đầu 
 ### Tác hại 
 - Tác hại của `code injection` có thể rất nghiêm trọng. Kẻ tấn công có thể truy cập và thay đổi dữ liệu, lấy cắp thông tin nhạy cảm, thực hiện các hành động trái phép trên hệ thống máy chủ, thậm chí kiểm soát toàn bộ máy chủ.
 - Ngoài ra còn có thể dẫn đến các cuộc tấn công khác như: SQL injection, XXS, Command injection, ...
+### Cách phòng chống
+- Xác thực đầu vào như sử dụng whitelist: chỉ cho phép các từ kiểm soát được.
+- Mã hóa: escape HTML entities để hạn chế nguy cơ thành mã độc hoặc mã hóa dữ liệu bằng cách khác trước khi được lưu trữ hoặc chuyển lên internet.
+- Sử dụng tường lửa, các công cụ phát hiện tấn công và thường xuyên cập nhật thư viện an toàn.
+### Lab
+<a href="https://github.com/caodchuong312/KCSC-Training/tree/main/task10/Code%20Injection%20Lab">lab</a>
+
+# Commmand Injection
+### Khái niệm
+Command injection là lỗ hổng mà kẻ tấn công có thể thực thi câu lệnh hệ điều hành trên máy chủ của ứng dụng đó
+### Nguyên nhân
+Nguyên nhân chính của command injection là thiếu kiểm tra đầu vào của ứng dụng hoặc sử dụng các hàm không an toàn trong xử lý đầu vào như: `system()`, `eval()`, `exec()`, ...
+Khi những lỗ hổng này xảy, kẻ tấn công có thể thực hiện các hành động trái phép nh như xem, sửa đổi hoặc xóa dữ liệu, kiểm soát toàn bộ hệ thống, và thực hiện các cuộc tấn công khác như DoS,...
+### Tác hại
+Tác hại của command injection rất nghiêm trọng. Kẻ tấn công có thể kiểm soát hoàn toàn hệ thống, đọc và sửa đổi các tập tin quan trọng, truy cập và thay đổi cơ sở dữ liệu, thực hiện các hành động trái phép trên mạng. Ngoài ra còn có thể dẫn đến các cuộc tấn công khác để đạt được mục đích kể tấn công.
 ### Bypass:
 - Exploit: `; ls` `&& ls`, `| ls`, `|| ls`,...
 - Bypass space:
@@ -32,25 +47,11 @@ Nguyên nhân chính của `code injection` là việc không kiểm tra đầu 
   - `${LS_COLORS:10:1}` => `;`
 - Encoding hex: `\x2f\x65\x74\x63\x2f\x70\x61\x73\x73\x77\x64`, `2f6574632f706173737764` => `/etc/passwd`
 - RCE with 4 or 5 char: <a href="https://book.hacktricks.xyz/linux-hardening/bypass-bash-restrictions#rce-with-5-chars">here</a>
-### Cách phòng chống
-- Xác thực đầu vào như sử dụng whitelist: chỉ cho phép các từ kiểm soát được.
-- Mã hóa: escape HTML entities để hạn chế nguy cơ thành mã độc hoặc mã hóa dữ liệu bằng cách khác trước khi được lưu trữ hoặc chuyển lên internet.
-- Sử dụng tường lửa, các công cụ phát hiện tấn công và thường xuyên cập nhật thư viện an toàn.
-### Lab
-<a href="https://github.com/caodchuong312/KCSC-Training/tree/main/task10/CommandInjectionLab">lab</a>
-# Commmand Injection
-### Khái niệm
-Command injection là lỗ hổng mà kẻ tấn công có thể thực thi câu lệnh hệ điều hành trên máy chủ của ứng dụng đó
-### Nguyên nhân
-Nguyên nhân chính của command injection là thiếu kiểm tra đầu vào của ứng dụng hoặc sử dụng các hàm không an toàn trong xử lý đầu vào như: `system()`, `eval()`, `exec()`, ...
-Khi những lỗ hổng này xảy, kẻ tấn công có thể thực hiện các hành động trái phép nh như xem, sửa đổi hoặc xóa dữ liệu, kiểm soát toàn bộ hệ thống, và thực hiện các cuộc tấn công khác như DoS,...
-### Tác hại
-Tác hại của command injection rất nghiêm trọng. Kẻ tấn công có thể kiểm soát hoàn toàn hệ thống, đọc và sửa đổi các tập tin quan trọng, truy cập và thay đổi cơ sở dữ liệu, thực hiện các hành động trái phép trên mạng. Ngoài ra còn có thể dẫn đến các cuộc tấn công khác để đạt được mục đích kể tấn công.
-
 ### Phòng chống
 - Kiểm tra xác thực đầu vào: Dùng whitelist để cho phép các câu lệnh an toàn được thực thi, loại bỏ các ký tự có thể chèn mã đọc như: `;`, `"`, `'`, `|`, `&`,...
 - Chỉ chấp nhận đầu vào chỉ có ký tự chữ và số, không có ký tự đặc biệt, khoảng trắng, ...
 - Ngoài ra cần thường xuyên cập nhật ứng dùng, thư viên an toàn.
-
+### Lab
+<a href="https://github.com/caodchuong312/KCSC-Training/tree/main/task10/CommandInjectionLab">lab</a>
 
   
