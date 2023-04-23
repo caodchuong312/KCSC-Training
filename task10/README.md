@@ -57,5 +57,5 @@ Tác hại của command injection rất nghiêm trọng. Kẻ tấn công có t
   
 ## Khác nhau giữa Code injection và Command injection
 
-- Code injection đề cập đến việc chèn 1 đoạn code độc hại và sẽ được thực thi trên ứng dụng đó. Khi ứng dụng chạy PHP thì sẽ chỉ chèn được code PHP hay với Nodejs thì là JavaScript
+- Code injection đề cập đến việc chèn 1 đoạn code độc hại và sẽ được thực thi trên ứng dụng đó. Khi ứng dụng chạy PHP thì sẽ chỉ chèn được code PHP hay với Nodejs thì là JavaScript,... Trong 1 số trường hợp thì lỗ hổng này thường chuyển sang lỗ hổng command injection.
 - Command injection đề cập việc chèn 1 câu lệnh hệ thống trên máy chủ. Vì vậy câu lệnh tuy thuộc vào hệ điều hành máy chủ web hoặc là loại shell mà nó sử dụng. Lỗ hổng này cho kẻ tấn cống dễ dàng tấn công vào server hơn hoặc mở rộng chức năng của mặc định của ứng dụng, thực thi trực tiếp mà không cần chèn thêm code.
