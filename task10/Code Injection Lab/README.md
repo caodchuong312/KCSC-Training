@@ -1,10 +1,10 @@
 # Code Injection
 Bài này em sẽ dựng lại 1 bài lab trên root-me về hàm `eval()` trong PHP
 
-`eval()` là hàm có thể thực thi được code PHP vì vậy dùng nó không an toàn có thể nguy hiển khi kẻ tấn công có thể inject mã độc vào và app sẽ thực thi nó.
+`eval()` là hàm có thể thực thi được code PHP vì vậy nếu sử dụng nó không an toàn có thể nguy hiểm khi kẻ tấn công có thể inject mã độc vào và app sẽ thực thi nó.
 
 `Description: The flag is in flag.txt file.`
-<br><br><br>
+<br><br>
 
 Web có nhận vào input và sẽ thực thi mã: 
 
@@ -16,19 +16,18 @@ Khi nhập `1+2` và kết quả:
 
 Hướng khai thắc ở đây là sẽ truyền vào hàm độc hại có thể thực thi câu lệnh hệ thống như: `system()` hoặc `exec()`,... để đọc `flag.txt`
 
-Tuy nhiên web không chấp nhận đầu vào là ký tự alphabet và ` : `(preg_match('/[a-zA-Z`]/', $_GET['input']))`.
+Tuy nhiên web không chấp nhận đầu vào là ký tự alphabet và ký tự ``` ` ``` : ```(preg_match('/[a-zA-Z`]/', $_GET['input']))```.
 
 Để giải bài này có 2 phương pháp ở <a href="https://securityonline.info/bypass-waf-php-webshell-without-numbers-letters/" >đây</a>
 
 Em sẽ làm cách 1 vì nó đơn giản và ngắn gọn hơn.
-
 Đó là sử dụng `XOR` từ các ký tự khác để tạo ra chữ cái.
 
 Ví dụ: 
 
 '(' XOR ']' được `s` từ đó sẽ xây dựng ra payload: `system('cat flag.txt')`
 
-`Script: `
+Tạo `script` đơn giản băng python:
 ```
 LETTERS="!@$%()[]_^-={}.|><,;"
 text="system('cat flag.txt')"
