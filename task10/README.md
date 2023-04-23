@@ -13,7 +13,11 @@ Nguyên nhân chính của `code injection` là việc không kiểm tra đầu 
 ### Tác hại 
 - Tác hại của `code injection` có thể rất nghiêm trọng. Kẻ tấn công có thể truy cập và thay đổi dữ liệu, lấy cắp thông tin nhạy cảm, thực hiện các hành động trái phép trên hệ thống máy chủ, thậm chí kiểm soát toàn bộ máy chủ.
 - Ngoài ra còn có thể dẫn đến các cuộc tấn công khác như: SQL injection, XXS, Command injection, ...
+### Bypass
+- Sử dụng các ký tự để inject như: `;`, `|`, `&`, #`, ...
+- Encode: URL, hex, ... để bypass backlist
 ### Cách phòng chống
+- Hạn chế sử dụng các hàm có thể thực thi câu lệnh như: `system()`, `exec()`, `eval()`,...
 - Xác thực đầu vào như sử dụng whitelist: chỉ cho phép các từ kiểm soát được.
 - Mã hóa: escape HTML entities để hạn chế nguy cơ thành mã độc hoặc mã hóa dữ liệu bằng cách khác trước khi được lưu trữ hoặc chuyển lên internet.
 - Sử dụng tường lửa, các công cụ phát hiện tấn công và thường xuyên cập nhật thư viện an toàn.
