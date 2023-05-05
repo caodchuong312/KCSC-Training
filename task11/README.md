@@ -29,6 +29,9 @@ Tuy nhiên trong trường hợp phải dùng thì cần:
 - Kiểm tra đầu vào.
 - Sử dụng thư viện deserialization an toàn và thường xuyên cập nhật chúng.
 
+# Lab
+
+<a href="https://github.com/caodchuong312/KCSC-Training/tree/main/task11/lab">Lab</a>
 
 # Rootme
 ## PHP - Serialization
